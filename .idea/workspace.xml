@@ -2,9 +2,42 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="541d2127-49de-4f5a-883f-d0e147a46c7b" name="Changes" comment="update">
+      <change afterPath="$PROJECT_DIR$/_posts/JavaScript/事件/2023-1-8-指针事件.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/技术/JavaScript/事件/2023-1-10-鼠标拖拽.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/技术/JavaScript/事件/2023-1-10-鼠标拖拽.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/技术/JavaScript/事件/2023-1-12-键盘事件.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/技术/JavaScript/事件/2023-1-12-键盘事件.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/技术/CSS/2022-11-07-at-rule.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/CSS/2022-11-07-at-rule.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/技术/CSS/2022-12-14-css查漏补缺.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/CSS/2022-12-14-css查漏补缺.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/技术/HTML/2022-11-08-HTML查漏补缺.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/HTML/2022-11-08-HTML查漏补缺.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/技术/HTML/2022-11-15-语义.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/HTML/2022-11-15-语义.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/技术/HTML/2022-12-17-元素坐标和大小.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/HTML/2022-12-17-元素坐标和大小.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/技术/HTML/2022-12-3-attribute and property.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/HTML/2022-12-3-attribute and property.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/技术/JavaScript/2022-10-29-eval.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/JavaScript/2022-10-29-eval.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/技术/JavaScript/2022-10-30-Proxy.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/JavaScript/2022-10-30-Proxy.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/技术/JavaScript/2022-10-31-查找元素的方法.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/JavaScript/2022-10-31-查找元素的方法.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/技术/JavaScript/2022-11-03-BigInt.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/JavaScript/2022-11-03-BigInt.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/技术/JavaScript/2022-11-03-ReferenceType.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/JavaScript/2022-11-03-ReferenceType.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/技术/JavaScript/2022-11-09-服务端渲染.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/JavaScript/2022-11-09-服务端渲染.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/技术/JavaScript/2022-11-13-内存管理.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/JavaScript/2022-11-13-内存管理.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/技术/JavaScript/2022-11-14-动态导入.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/JavaScript/2022-11-14-动态导入.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/技术/JavaScript/2022-11-14-复制黏贴.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/JavaScript/2022-11-14-复制黏贴.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/技术/JavaScript/2022-11-26-this.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/JavaScript/2022-11-26-this.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/技术/JavaScript/事件/2022-12-26-事件.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/JavaScript/事件/2022-12-26-事件.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/技术/JavaScript/事件/2023-1-10-鼠标拖拽.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/JavaScript/事件/2023-1-10-鼠标拖拽.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/技术/JavaScript/事件/2023-1-12-focus和blur事件.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/JavaScript/事件/2023-1-12-focus和blur事件.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/技术/JavaScript/事件/2023-1-12-input和change事件.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/JavaScript/事件/2023-1-12-input和change事件.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/技术/JavaScript/事件/2023-1-12-复制粘贴事件.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/JavaScript/事件/2023-1-12-复制粘贴事件.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/技术/JavaScript/事件/2023-1-12-键盘事件.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/JavaScript/事件/2023-1-12-键盘事件.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/技术/JavaScript/事件/2023-1-3-scroll事件.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/JavaScript/事件/2023-1-3-scroll事件.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/技术/JavaScript/事件/2023-1-3-自定义事件.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/JavaScript/事件/2023-1-3-自定义事件.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/技术/JavaScript/事件/2023-1-8-指针事件.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/技术/JavaScript/原型、类/2022-11-26-JS中的原型.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/JavaScript/原型、类/2022-11-26-JS中的原型.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/技术/JavaScript/类型/2022-11-15-类型.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/JavaScript/类型/2022-11-15-类型.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/技术/JavaScript/表单/2023-1-11-表单.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/HTML/2023-1-11-表单.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/技术/Vue/2022-11-12-模板编译.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/Vue/2022-11-12-模板编译.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/技术/小程序/2022-11-07-小程序查漏补缺.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/小程序/2022-11-07-小程序查漏补缺.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/技术/工程化/2022-11-09-webpack.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/工程化/2022-11-09-webpack.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/技术/工程化/2022-12-3-组件库.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/工程化/2022-12-3-组件库.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/技术/面试/2022-11-05-面试题.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/面试/2022-11-05-面试题.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/技术/面试/2022-11-12-手写题.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/面试/2022-11-12-手写题.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,7 +61,7 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/CODE/1f606.github.io/_posts/技术/JavaScript/事件&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/CODE/1f606.github.io/_posts/浏览器&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;settings.space&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
@@ -36,18 +69,18 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\CODE\1f606.github.io\_posts\浏览器" />
       <recent name="D:\CODE\1f606.github.io\_posts\技术\JavaScript\事件" />
       <recent name="D:\CODE\1f606.github.io\_posts\技术\JavaScript\表单" />
       <recent name="D:\CODE\1f606.github.io\_posts\技术" />
       <recent name="D:\CODE\1f606.github.io\_posts" />
-      <recent name="D:\CODE\1f606.github.io\_posts\技术\JavaScript" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\CODE\1f606.github.io\_posts\HTML" />
+      <recent name="D:\CODE\1f606.github.io\_posts" />
       <recent name="D:\CODE\1f606.github.io\_posts\技术\JavaScript\事件" />
       <recent name="D:\CODE\1f606.github.io\img" />
       <recent name="D:\CODE\1f606.github.io\指针事件类型" />
-      <recent name="D:\CODE\1f606.github.io\_posts\技术\JavaScript" />
-      <recent name="D:\CODE\1f606.github.io\_posts\技术\面试" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -95,7 +128,16 @@
       <workItem from="1673533255091" duration="2745000" />
       <workItem from="1673852109970" duration="2272000" />
       <workItem from="1674021079603" duration="780000" />
-      <workItem from="1674022003810" duration="2495000" />
+      <workItem from="1674022003810" duration="2771000" />
+      <workItem from="1674096076222" duration="2474000" />
+      <workItem from="1674110575302" duration="1519000" />
+      <workItem from="1674279184951" duration="2181000" />
+      <workItem from="1674361418353" duration="2000" />
+      <workItem from="1674390024834" duration="1545000" />
+      <workItem from="1674528982707" duration="637000" />
+      <workItem from="1674547742434" duration="2997000" />
+      <workItem from="1674909223128" duration="5031000" />
+      <workItem from="1674967153129" duration="13407000" />
     </task>
     <task id="LOCAL-00002" summary="update">
       <created>1669472616596</created>
@@ -153,7 +195,14 @@
       <option name="project" value="LOCAL" />
       <updated>1673538062330</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="update">
+      <created>1674029942367</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1674029942367</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -164,7 +213,19 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="master" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
