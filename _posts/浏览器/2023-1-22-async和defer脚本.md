@@ -3,7 +3,7 @@ layout:     post
 title:      async和defer脚本
 subtitle:   
 date:       2023-1-22
-author:     sq
+author:     
 header-img: 
 catalog: true
 tags:

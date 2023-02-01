@@ -3,7 +3,7 @@ layout:     post
 title:      Mutation observer
 subtitle:   
 date:       2023-1-29
-author:     sq
+author:     
 header-img: 
 catalog: true
 tags:

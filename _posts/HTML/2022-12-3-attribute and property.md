@@ -3,7 +3,7 @@ layout:     post
 title:      attribute and property
 subtitle:   
 date:       2022-12-3
-author:     sq
+author:     
 header-img: 
 catalog: true
 tags:
