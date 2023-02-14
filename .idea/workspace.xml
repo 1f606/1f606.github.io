@@ -3,14 +3,19 @@
   <component name="ChangeListManager">
     <list default="true" id="541d2127-49de-4f5a-883f-d0e147a46c7b" name="Changes" comment="update">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/HTML/2022-11-15-语义.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/HTML/2022-11-15-语义.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/_posts/面试/2022-11-05-面试题.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/面试/2022-11-05-面试题.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/面试/2022-11-12-手写题.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/面试/2022-11-12-手写题.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -29,7 +34,7 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/CODE/1f606.github.io/_posts/浏览器&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/CODE/1f606.github.io/_posts/JavaScript&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;settings.space&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
@@ -37,18 +42,18 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\CODE\1f606.github.io\_posts\浏览器" />
       <recent name="D:\CODE\1f606.github.io\_posts\JavaScript" />
+      <recent name="D:\CODE\1f606.github.io\_posts\浏览器" />
       <recent name="D:\CODE\1f606.github.io\_posts\网络" />
       <recent name="D:\CODE\1f606.github.io\_posts\技术\JavaScript\事件" />
       <recent name="D:\CODE\1f606.github.io\_posts\技术\JavaScript\表单" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\CODE\1f606.github.io\img" />
+      <recent name="D:\CODE\1f606.github.io\层叠上下文" />
       <recent name="D:\CODE\1f606.github.io\_posts\HTML" />
       <recent name="D:\CODE\1f606.github.io\_posts" />
       <recent name="D:\CODE\1f606.github.io\_posts\技术\JavaScript\事件" />
-      <recent name="D:\CODE\1f606.github.io\指针事件类型" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -118,7 +123,10 @@
       <workItem from="1675694607124" duration="1440000" />
       <workItem from="1676042216167" duration="1666000" />
       <workItem from="1676098361432" duration="8290000" />
-      <workItem from="1676173022364" duration="2646000" />
+      <workItem from="1676173022364" duration="2743000" />
+      <workItem from="1676194383935" duration="2531000" />
+      <workItem from="1676290726274" duration="4195000" />
+      <workItem from="1676381865303" duration="3004000" />
     </task>
     <task id="LOCAL-00002" summary="update">
       <created>1669472616596</created>
@@ -211,7 +219,14 @@
       <option name="project" value="LOCAL" />
       <updated>1675695444778</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="update">
+      <created>1676176029989</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1676176029989</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
