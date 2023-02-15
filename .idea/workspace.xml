@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="541d2127-49de-4f5a-883f-d0e147a46c7b" name="Changes" comment="update">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/面试/2022-11-05-面试题.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/面试/2022-11-05-面试题.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/工程化/2022-11-09-webpack.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/工程化/2022-11-09-webpack.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -126,7 +126,8 @@
       <workItem from="1676173022364" duration="2743000" />
       <workItem from="1676194383935" duration="2531000" />
       <workItem from="1676290726274" duration="4195000" />
-      <workItem from="1676381865303" duration="3004000" />
+      <workItem from="1676381865303" duration="3624000" />
+      <workItem from="1676474756804" duration="1107000" />
     </task>
     <task id="LOCAL-00002" summary="update">
       <created>1669472616596</created>
@@ -226,7 +227,14 @@
       <option name="project" value="LOCAL" />
       <updated>1676176029989</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="update">
+      <created>1676386785534</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1676386785534</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
