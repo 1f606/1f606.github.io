@@ -3,7 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="541d2127-49de-4f5a-883f-d0e147a46c7b" name="Changes" comment="update">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/2022-12-6-计算机基础.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/2022-12-6-计算机基础.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/_posts/JavaScript/2023-2-13-fetch.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/JavaScript/2023-2-13-fetch.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/工程化/2022-11-09-webpack.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/工程化/2022-11-09-webpack.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,24 +31,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/CODE/1f606.github.io/img&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;settings.space&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "C:/Users/charl/Desktop/5-1_use-vue",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "settings.space",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\CODE\1f606.github.io\_posts\工程化" />
       <recent name="D:\CODE\1f606.github.io\img" />
       <recent name="D:\CODE\1f606.github.io\_posts\JavaScript" />
       <recent name="D:\CODE\1f606.github.io\_posts\浏览器" />
       <recent name="D:\CODE\1f606.github.io\_posts\网络" />
-      <recent name="D:\CODE\1f606.github.io\_posts\技术\JavaScript\事件" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\CODE\1f606.github.io\img" />
@@ -130,6 +132,9 @@
       <workItem from="1676474756804" duration="1242000" />
       <workItem from="1676562288946" duration="418000" />
       <workItem from="1676642382705" duration="2939000" />
+      <workItem from="1676788733258" duration="2157000" />
+      <workItem from="1676793016769" duration="1273000" />
+      <workItem from="1676795730021" duration="3911000" />
     </task>
     <task id="LOCAL-00002" summary="update">
       <created>1669472616596</created>
