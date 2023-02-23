@@ -3,10 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="541d2127-49de-4f5a-883f-d0e147a46c7b" name="Changes" comment="update">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/2022-12-6-计算机基础.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/2022-12-6-计算机基础.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/CSS/2022-12-14-css查漏补缺.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/CSS/2022-12-14-css查漏补缺.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/浮点数表示.png" beforeDir="false" afterPath="$PROJECT_DIR$/img/浮点数表示.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/面试/2022-11-05-面试题.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/面试/2022-11-05-面试题.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/JavaScript/2023-2-21-XMLHttpRequest.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/JavaScript/2023-2-21-XMLHttpRequest.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/小程序/2022-11-07-小程序查漏补缺.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/小程序/2022-11-07-小程序查漏补缺.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,23 +30,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/CODE/1f606.github.io/_posts/JavaScript&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;settings.space&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "D:/CODE/1f606.github.io/_posts/浏览器",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "settings.space",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\CODE\1f606.github.io\_posts\浏览器" />
       <recent name="D:\CODE\1f606.github.io\_posts\JavaScript" />
       <recent name="D:\CODE\1f606.github.io\_posts\工程化" />
       <recent name="D:\CODE\1f606.github.io\img" />
-      <recent name="D:\CODE\1f606.github.io\_posts\浏览器" />
       <recent name="D:\CODE\1f606.github.io\_posts\网络" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -138,7 +136,8 @@
       <workItem from="1676795730021" duration="4243000" />
       <workItem from="1676905330720" duration="974000" />
       <workItem from="1676990407910" duration="1168000" />
-      <workItem from="1677071259429" duration="3949000" />
+      <workItem from="1677071259429" duration="4348000" />
+      <workItem from="1677163398818" duration="1290000" />
     </task>
     <task id="LOCAL-00002" summary="update">
       <created>1669472616596</created>
@@ -294,7 +293,14 @@
       <option name="project" value="LOCAL" />
       <updated>1677077576413</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="update">
+      <created>1677081031255</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1677081031255</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

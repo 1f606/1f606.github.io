@@ -275,3 +275,47 @@ xhr.withCredentials = true;
 xhr.open('POST', 'http://anywhere.com/request');
 ...
 ```
+
+## 可恢复的文件上传
+fetch 不允许跟踪上传进度，XMLHttpRequest可以。
+
+### 不太实用的进度事件
+要恢复上传，我们需要知道在连接断开前已经上传了多少。
+
+我们有 xhr.upload.onprogress 来跟踪上传进度。不幸的是，它不会帮助我们在此处恢复上传，因为它会在数据 被发送 时触发，但是服务器是否接收到了？浏览器并不知道。
+
+要恢复上传，我们需要 确切地 知道服务器接收的字节数。而且只有服务器能告诉我们，因此，我们将发出一个额外的请求。
+
+具体做法：
+
+1. 首先，创建一个文件 id，以唯一地标识我们要上传的文件：
+
+`let fileId = file.name + '-' + file.size + '-' + file.lastModified;`
+
+在恢复上传时需要用到它，以告诉服务器我们要恢复的内容。如果名称，或大小，或最后一次修改时间发生了更改，则将有另一个 fileId。
+
+2. 向服务器发送一个请求，询问它已经有了多少字节，像这样：
+
+```
+let response = await fetch('status', { headers: { 'X-File-Id': fileId } });
+// 服务器已有的字节数
+let startByte = +await response.text();
+```
+
+3. 然后，我们可以使用 Blob 和 slice 方法来发送从 startByte 开始的文件：
+
+```javascript
+xhr.open('post', 'upload', true);
+
+// 文件id，以便服务器知道我们要恢复的是哪个文件
+xhr.setRequestHeader('X-File-Id', fileId);
+
+// 发送我们要从哪个字节开始恢复，因此服务器知道我们正在恢复
+xhr.setRequestHeader('X-Start-Byte', startByte);
+
+xhr.upload.onprogress = e => {
+  console.log(`uploaded ${starByte + e.loaded} of ${starByte + e.total}`);
+};
+
+xhr.send(file.slice(startByte));
+```
