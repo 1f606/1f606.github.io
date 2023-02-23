@@ -39,20 +39,20 @@ offset 最小为0，最大为文本长度。setStart 设置的 offset会被选�
 这是它的 DOM 结构，包含元素和文本节点：
 - P
   - #text Example：
-  - I
+  - i
     - #text italic
   - #text and
-  - B
+  - b
     - #text bold
 
 正如我们所看到的，这个短语正好由 `<p>` 的索引为 0 和 1 的两个子元素组成。
 ![img.png](/img/selection和range-选择元素节点.png)
 
-- 起点以 <p> 作为父节点 node，0 作为偏移量。
+- 起点以 `<p>` 作为父节点 node，0 作为偏移量。
 
 因此，我们可以将其设置为 range.setStart(p, 0)。
 
-- 终点也是以 <p> 作为父节点 node，但以 2 作为偏移量（它指定最大范围，但不包括 offset）。
+- 终点也是以 `<p>` 作为父节点 node，但以 2 作为偏移量（它指定最大范围，但不包括 offset）。
 
 因此，我们可以将其设置为 range.setEnd(p, 2)。
 
@@ -100,7 +100,7 @@ range.setEnd(p.querySelector('b').firstChild, 3);
 - extractContents() —— 从文档中删除范围中的内容，并将删除的内容作为 DocumentFragment 返回
 - cloneContents() —— 复制范围中的内容，并将复制的内容作为 DocumentFragment 返回
 - insertNode(node) —— 在范围的起始处将 node 插入文档
-- surroundContents(node) —— 使用 node 将所选范围中的内容包裹起来。要使此操作有效，则该范围必须包含其中所有元素的开始和结束标签：不能像 <i>abc 这样的部分范围。
+- surroundContents(node) —— 使用 node 将所选范围中的内容包裹起来。要使此操作有效，则该范围必须包含其中所有元素的开始和结束标签：不能像 `<i>abc` 这样的部分范围。
 
 ## selection
 Range 是用于管理选择范围的通用对象。但它们并不会在视觉上选择任何内容。
