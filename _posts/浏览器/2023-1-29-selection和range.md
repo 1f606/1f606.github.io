@@ -332,21 +332,17 @@ button.onclick = () => {
 
 #### 使不可选
 要使某些内容不可选，有三种方式：
-- 使用 CSS 属性 user-select: none。
-  这样不允许选择从 elem 开始。但是用户可以在其他地方开始选择，并将 elem 包含在内。
-  
-  然后 elem 将成为 document.getSelection() 的一部分，因此选择实际发生了，但是在复制粘贴中，其内容通常会被忽略。
-- 禁止 onselectstart 或 mousedown 事件中的默认行为。
-  这样可以防止在 elem 上开始选择，但是访问者可以在另一个元素上开始选择，然后扩展到 elem。 
-  
-  当同一行为上有另一个事件处理程序触发选择时（例如 mousedown），这会很方便。因此我们禁用选择以避免冲突，仍然允许复制 elem 内容。
+- 使用 CSS 属性 user-select: none。这样不允许选择从 elem 开始。但是用户可以在其他地方开始选择，并将 elem 包含在内。然后 elem 将成为 document.getSelection() 的一部分，因此选择实际发生了，但是在复制粘贴中，其内容通常会被忽略。
+- 禁止 onselectstart 或 mousedown 事件中的默认行为。这样可以防止在 elem 上开始选择，但是访问者可以在另一个元素上开始选择，然后扩展到 elem。 当同一行为上有另一个事件处理程序触发选择时（例如 mousedown），这会很方便。因此我们禁用选择以避免冲突，仍然允许复制 elem 内容。
 - 还可以使用 document.getSelection().empty() 来在选择发生后清除选择。很少使用这种方法，因为这会在选择项消失时导致不必要的闪烁。
+
 
 ## 总结
 常用方法：
-- 获取选择。
-`document.getSelection()`
+
+- 获取选择。`document.getSelection()`
 - 设置选择。
+
 ```javascript
 let selection = document.getSelection();
 
@@ -359,3 +355,6 @@ selection.addRange(range);
 ```
 
 关于光标。在诸如 `<textarea>` 之类的可编辑元素中，光标的位置始终位于选择的起点或终点。我们可以通过设置 elem.selectionStart 和 elem.selectionEnd 来获取光标位置或移动光标。
+
+## 资料
+[在Web中实现表情符号的输入](https://zhuanlan.zhihu.com/p/355532173)
