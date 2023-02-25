@@ -3,10 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="541d2127-49de-4f5a-883f-d0e147a46c7b" name="Changes" comment="update">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/CSS/2022-12-14-css查漏补缺.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/CSS/2022-12-14-css查漏补缺.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/HTML/2022-11-08-HTML查漏补缺.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/HTML/2022-11-08-HTML查漏补缺.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/JavaScript/2023-2-5-二进制数组.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/JavaScript/2023-2-5-二进制数组.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/小程序/2022-11-07-小程序查漏补缺.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/微信/2022-11-07-小程序查漏补缺.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/JavaScript/2023-2-13-fetch.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/JavaScript/网络请求/2023-2-13-fetch.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/JavaScript/2023-2-13-formData.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/JavaScript/网络请求/2023-2-13-formData.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/JavaScript/2023-2-21-XMLHttpRequest.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/JavaScript/网络请求/2023-2-21-XMLHttpRequest.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,7 +36,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "D:/CODE/1f606.github.io/_posts/网络",
+    "last_opened_file_path": "D:/CODE/1f606.github.io/_posts/JavaScript/网络请求",
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "settings.space",
     "vue.rearranger.settings.migration": "true"
@@ -45,18 +44,18 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\CODE\1f606.github.io\_posts\JavaScript\网络请求" />
+      <recent name="D:\CODE\1f606.github.io\_posts\JavaScript" />
       <recent name="D:\CODE\1f606.github.io\_posts\网络" />
       <recent name="D:\CODE\1f606.github.io\_posts\HTML" />
       <recent name="D:\CODE\1f606.github.io\_posts\微信" />
-      <recent name="D:\CODE\1f606.github.io\_posts\浏览器" />
-      <recent name="D:\CODE\1f606.github.io\_posts\JavaScript" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\CODE\1f606.github.io\_posts\JavaScript\网络请求" />
       <recent name="D:\CODE\1f606.github.io\_posts\react" />
       <recent name="D:\CODE\1f606.github.io\_posts\Vue" />
       <recent name="D:\CODE\1f606.github.io\_posts\JavaScript" />
       <recent name="D:\CODE\1f606.github.io\_posts\微信" />
-      <recent name="D:\CODE\1f606.github.io\img" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -140,7 +139,8 @@
       <workItem from="1676990407910" duration="1168000" />
       <workItem from="1677071259429" duration="4348000" />
       <workItem from="1677163398818" duration="1759000" />
-      <workItem from="1677249150955" duration="3004000" />
+      <workItem from="1677249150955" duration="4717000" />
+      <workItem from="1677292758312" duration="2441000" />
     </task>
     <task id="LOCAL-00002" summary="update">
       <created>1669472616596</created>
@@ -310,7 +310,14 @@
       <option name="project" value="LOCAL" />
       <updated>1677167789106</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="update">
+      <created>1677252716670</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1677252716670</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
