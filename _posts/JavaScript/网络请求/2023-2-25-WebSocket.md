@@ -156,3 +156,66 @@ socket.onmessage = (event) => {
   // event.data 可以是文本（如果是文本），也可以是 arraybuffer（如果是二进制数据）
 };
 ```
+
+## 限速
+在网速慢的情况下，反复地调用 `socket.send(data)`。数据将会缓冲（储存）在内存中，在网速允许的情况下数据将被发送出去。
+
+`socket.bufferedAmount` 属性储存了目前已缓冲的字节数，等待通过网络发送。
+
+我们可以检查它以查看 socket 是否真的可用于传输。
+
+```javascript
+setInterval(() => {
+  if (socket.bufferedAmount === 0) {
+    socket.send(data);
+  }
+}, 100)
+```
+
+## 连接关闭
+通常，当一方想要关闭连接时（浏览器和服务器都具有相同的权限），它们会发送一个带有数字码（numeric code）和文本形式的原因的 “connection close frame”。
+
+它的方法是： `socket.close([code], [reason]);`
+
+- code 是一个特殊的 WebSocket 关闭码（可选）
+- reason 是一个描述关闭原因的字符串（可选）
+
+然后，另外一方通过 close 事件处理器获取了关闭码和关闭原因，`socket.onclose = e => {}`。
+
+最常见的数字码：
+- 1000 —— 默认，正常关闭（如果没有指明 code 时使用它），
+- 1006 —— 没有办法手动设定这个数字码，表示连接丢失（没有 close frame）。
+
+还有其他数字码，例如：
+- 1001 —— 一方正在离开，例如服务器正在关闭，或者浏览器离开了该页面，
+- 1009 —— 消息太大，无法处理，
+- 1011 —— 服务器上发生意外错误，
+
+完整列表请见 [RFC6455, §7.4.1](https://tools.ietf.org/html/rfc6455#section-7.4.1)。
+
+WebSocket 码有点像 HTTP 码，但它们是不同的。特别是，小于 1000 的码都是被保留的，如果我们尝试设置这样的码，将会出现错误。
+
+## 连接状态
+要获取连接状态，可以通过带有值的 socket.readyState 属性：
+- 0 —— “CONNECTING”：连接还未建立，
+- 1 —— “OPEN”：通信中，
+- 2 —— “CLOSING”：连接关闭中，
+- 3 —— “CLOSED”：连接已关闭。
+
+## 总结
+WebSocket 是一种在浏览器和服务器之间建立持久连接的现代方式。
+
+- WebSocket 没有跨源限制。
+- 可以发送/接收字符串和二进制数据。
+
+WebSocket 方法：
+- `socket.send(data)`，
+- `socket.close([code], [reason])`。
+
+WebSocket 事件：
+- open，
+- message，
+- error，
+- close。
+
+WebSocket 自身并不包含重新连接（reconnection），身份验证（authentication）和很多其他高级机制。因此，有针对于此的客户端/服务端的库，并且也可以手动实现这些功能。
