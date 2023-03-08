@@ -3,7 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="541d2127-49de-4f5a-883f-d0e147a46c7b" name="Changes" comment="update">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/Vue/2023-2-24-Vue3.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/Vue/2023-2-24-Vue3.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/工程化/2022-11-09-webpack.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/工程化/2022-11-09-webpack.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/工程化/2022-12-3-组件库.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/工程化/2022-12-3-组件库.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,7 +35,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "D:/CODE/1f606.github.io/_posts/Vue",
+    "last_opened_file_path": "D:/CODE/1f606.github.io/_posts/JavaScript/网络请求",
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "settings.space",
     "vue.rearranger.settings.migration": "true"
@@ -42,11 +43,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\CODE\1f606.github.io\_posts\JavaScript\网络请求" />
       <recent name="D:\CODE\1f606.github.io\_posts\Vue" />
       <recent name="D:\CODE\1f606.github.io\_posts\TypeScript" />
       <recent name="D:\CODE\1f606.github.io\_posts\JavaScript\存储数据" />
       <recent name="D:\CODE\1f606.github.io\_posts\JavaScript\二进制数据、文件" />
-      <recent name="D:\CODE\1f606.github.io\_posts\JavaScript" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\CODE\1f606.github.io\_posts\JavaScript\存储数据" />
@@ -150,7 +151,8 @@
       <workItem from="1677916245699" duration="2486000" />
       <workItem from="1678105964303" duration="4874000" />
       <workItem from="1678116583171" duration="1343000" />
-      <workItem from="1678194396456" duration="2322000" />
+      <workItem from="1678194396456" duration="3778000" />
+      <workItem from="1678284957655" duration="4673000" />
     </task>
     <task id="LOCAL-00002" summary="update">
       <created>1669472616596</created>
@@ -376,7 +378,14 @@
       <option name="project" value="LOCAL" />
       <updated>1678117930313</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="update">
+      <created>1678197125320</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1678197125320</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
