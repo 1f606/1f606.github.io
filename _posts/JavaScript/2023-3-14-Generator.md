@@ -1,13 +1,13 @@
 ---
 layout:     post
-title:      
+title:      Generator
 subtitle:   
-date:       
-author:     
+date:       2023-3-14
+author:     sq
 header-img: 
 catalog: true
 tags:
-    - 
+    - Generator
 ---
 # Generator
 generator 是可迭代的，可以使用 iterator 的所有相关功能，例如：spread 语法 和 for of。

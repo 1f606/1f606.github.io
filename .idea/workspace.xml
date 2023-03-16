@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="541d2127-49de-4f5a-883f-d0e147a46c7b" name="Changes" comment="update">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/微信/2022-11-07-小程序查漏补缺.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/微信/2022-11-07-小程序查漏补缺.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/JavaScript/2023-3-14-Generator.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/JavaScript/2023-3-14-Generator.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,7 +34,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "D:/CODE/1f606.github.io/_posts/JavaScript",
+    "last_opened_file_path": "D:/CODE/1f606.github.io/_posts/SQL",
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "settings.space",
     "vue.rearranger.settings.migration": "true"
@@ -42,11 +42,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\CODE\1f606.github.io\_posts\SQL" />
       <recent name="D:\CODE\1f606.github.io\_posts\JavaScript" />
       <recent name="D:\CODE\1f606.github.io\_posts\JavaScript\网络请求" />
       <recent name="D:\CODE\1f606.github.io\_posts\Vue" />
       <recent name="D:\CODE\1f606.github.io\_posts\TypeScript" />
-      <recent name="D:\CODE\1f606.github.io\_posts\JavaScript\存储数据" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\CODE\1f606.github.io\_posts\JavaScript\object" />
@@ -159,6 +159,7 @@
       <workItem from="1678720361343" duration="1770000" />
       <workItem from="1678807377610" duration="84000" />
       <workItem from="1678807749758" duration="501000" />
+      <workItem from="1678974064393" duration="1708000" />
     </task>
     <task id="LOCAL-00002" summary="update">
       <created>1669472616596</created>
