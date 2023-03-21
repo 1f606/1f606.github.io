@@ -204,6 +204,12 @@ As text: <span id="astext"></span>
   document.getSelection().addRange(range);
 </script>
 ```
+移动光标到最后
+```javascript
+const range = window.getSelection();
+range.selectAllChildren(elem);
+range.collapseToEnd();
+```
 
 #### 如要选择一些内容，请先移除现有的选择。
 如果在文档中已存在选择，则首先使用 removeAllRanges() 将其清空。然后添加范围。否则，除 Firefox 外的所有浏览器都将忽略新范围。
