@@ -136,6 +136,67 @@ Note that there’s one more kind of literal type: boolean literals, with only t
 It is actually just an alias for the union true | false.
 
 ## Literal Inference
+TypeScript can infer the type of the property of Object.
+
+For example:
+```typescript
+const obj = {method: 'GET'};
+
+// And its type is: 
+const obj = {
+    method: string
+}
+
+// and we have an request method here
+function request(url: string, method: 'GET' | 'POST'): void
+```
+
+when we call request and pass the obj.method as parameter. It has an error:
+
+`Argument of type 'string' is not assignable to parameter of type '"GET" | "POST"'.`
+
+There are two ways to work around this.
+
+You can change the inference by adding a type assertion in either location:
+```typescript
+// Change 1:
+const req = { url: "https://example.com", method: "GET" as "GET" };
+// Change 2
+handleRequest(req.url, req.method as "GET");
+```
+
+You can use as const to convert the entire object to be type literals:
+
+```typescript
+const req = { url: "https://example.com", method: "GET" } as const;
+```
+The as const suffix acts like const but for the type system
+
+## null and undefined
+`null` and `undefined` are used to signal absent or uninitialized value.
+
+TypeScript has two corresponding types by the same names. How these types behave depends on whether you have the 
+`strictNullChecks` option on.
+
+### strictNullChecks off
+With strictNullChecks off, values that might be null or undefined can still be accessed normally, and the values null 
+and undefined can be assigned to a property of any type.
+
+### strictNullChecks on
+With strictNullChecks on, when a value is null or undefined, you will need to test for those values before using methods
+or properties on that value.
+
+## Non-null Assertion Operator (Postfix`!`)
+TypeScript also has a special syntax for removing null and undefined from a type without doing any explicit checking. 
+Writing `!` after any expression is effectively a type assertion that the value isn’t null or undefined:
+
+```typescript
+function liveDangerously(x?: number | null) {
+  // No error
+  console.log(x!.toFixed());
+}
+```
+
 
 ## 资料
 https://www.typescriptlang.org
