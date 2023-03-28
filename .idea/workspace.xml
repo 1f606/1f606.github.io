@@ -6,9 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="541d2127-49de-4f5a-883f-d0e147a46c7b" name="Changes" comment="update">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/JavaScript/事件/2023-1-10-鼠标拖拽.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/JavaScript/事件/2023-1-10-鼠标拖放.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/JavaScript/事件/2023-1-8-指针事件.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/JavaScript/事件/2023-1-8-指针事件.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/TypeScript/2023-3-6-TypeScript学习.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/TypeScript/2023-3-6-TypeScript学习.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/微信/2022-11-07-小程序查漏补缺.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/微信/2022-11-07-小程序查漏补缺.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -192,6 +190,7 @@
       <workItem from="1679755304425" duration="532000" />
       <workItem from="1679800218891" duration="3171000" />
       <workItem from="1679823251963" duration="2594000" />
+      <workItem from="1680011815874" duration="2082000" />
     </task>
     <task id="LOCAL-00002" summary="update">
       <created>1669472616596</created>
