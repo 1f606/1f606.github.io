@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="541d2127-49de-4f5a-883f-d0e147a46c7b" name="Changes" comment="update">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/微信/2022-11-07-小程序查漏补缺.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/微信/2022-11-07-小程序查漏补缺.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -190,7 +189,8 @@
       <workItem from="1679755304425" duration="532000" />
       <workItem from="1679800218891" duration="3171000" />
       <workItem from="1679823251963" duration="2594000" />
-      <workItem from="1680011815874" duration="2082000" />
+      <workItem from="1680011815874" duration="2096000" />
+      <workItem from="1680096433690" duration="3000" />
     </task>
     <task id="LOCAL-00002" summary="update">
       <created>1669472616596</created>
@@ -472,7 +472,14 @@
       <option name="project" value="LOCAL" />
       <updated>1679581996531</updated>
     </task>
-    <option name="localTasksCounter" value="42" />
+    <task id="LOCAL-00042" summary="update">
+      <created>1680017223904</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1680017223904</updated>
+    </task>
+    <option name="localTasksCounter" value="43" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
