@@ -6,8 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="541d2127-49de-4f5a-883f-d0e147a46c7b" name="Changes" comment="update">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/工程化/2022-11-09-webpack.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/工程化/2022-11-09-webpack.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/面试/2022-11-05-面试题.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/面试/2022-11-05-面试题.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/微信/2022-11-07-小程序查漏补缺.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/微信/2022-11-07-小程序指南.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/浏览器/2023-2-1-事件循环.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/浏览器/2023-2-1-事件循环.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,7 +40,7 @@
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/CODE/1f606.github.io/_posts/浏览器/动画&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/CODE/1f606.github.io/_posts/JavaScript/Web Component&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -52,18 +52,18 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\CODE\1f606.github.io\_posts\JavaScript\Web Component" />
       <recent name="D:\CODE\1f606.github.io\_posts\浏览器\动画" />
       <recent name="D:\CODE\1f606.github.io\_posts\浏览器\Frame和window" />
       <recent name="D:\CODE\1f606.github.io\_posts\SQL" />
       <recent name="D:\CODE\1f606.github.io\_posts\JavaScript" />
-      <recent name="D:\CODE\1f606.github.io\_posts\JavaScript\网络请求" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\CODE\1f606.github.io\_posts\浏览器\安全" />
       <recent name="D:\CODE\1f606.github.io\img" />
       <recent name="D:\CODE\1f606.github.io\_posts\JavaScript\object" />
       <recent name="D:\CODE\1f606.github.io\_posts\JavaScript\存储数据" />
       <recent name="D:\CODE\1f606.github.io\_posts\JavaScript\二进制数据、文件" />
-      <recent name="D:\CODE\1f606.github.io\_posts\浏览器" />
     </key>
   </component>
   <component name="RunManager">
@@ -196,7 +196,9 @@
       <workItem from="1680011815874" duration="2096000" />
       <workItem from="1680096433690" duration="3000" />
       <workItem from="1680332606403" duration="22000" />
-      <workItem from="1680332638525" duration="5108000" />
+      <workItem from="1680332638525" duration="10827000" />
+      <workItem from="1680410759839" duration="712000" />
+      <workItem from="1680441109359" duration="2133000" />
     </task>
     <task id="LOCAL-00002" summary="update">
       <created>1669472616596</created>
@@ -485,7 +487,14 @@
       <option name="project" value="LOCAL" />
       <updated>1680017223904</updated>
     </task>
-    <option name="localTasksCounter" value="43" />
+    <task id="LOCAL-00043" summary="update">
+      <created>1680410192319</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1680410192319</updated>
+    </task>
+    <option name="localTasksCounter" value="44" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
