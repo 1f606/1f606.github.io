@@ -119,7 +119,7 @@ Shadow DOM 是创建组件级别 DOM 的一种方法。
 Shadow DOM 元素：
 * 有自己的 id 空间。
 * 对主文档的 JavaScript 选择器隐身，比如 querySelector。
-* 只使用 shadow tree 内部的样式，不使用主文档的样式。
+* 只使用 shadow tree 内部的样式，不使用主文档的样式。[4be4ca8765594c7a3f1c3c95fef7adc0.md](..%2F..%2F..%2F..%2F..%2FWechat%20Files%2FWeChat%20Files%2Fwxid_e4out9w7znz622%2FFileStorage%2FFav%2FTemp%2F29305dd3%2Fres%2F4be4ca8765594c7a3f1c3c95fef7adc0.md)
 
 Shadow DOM，如果存在的话，会被浏览器渲染而不是所谓的 「light DOM」（普通子元素）。
 
