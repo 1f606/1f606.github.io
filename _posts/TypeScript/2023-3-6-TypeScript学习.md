@@ -12,6 +12,74 @@ tags:
 # TypeScript from scratch
 定义类型的方法：在标识符、函数的小括号后添加冒号和类型。
 
+## 基础
+
+```shell
+#安装
+npm i typescript -g
+
+# 初始化
+tsc --init
+
+#实时监听ts文件变化编译为js文件
+tsc -w
+
+#编译 ts 文件为 js 文件
+tsc fileName
+```
+
+### 环境
+
+```shell
+npm i ts-node -g
+npm i @types/node -D
+
+# 使用
+ts-node fileName
+```
+
+## 基础类型
+`Object`，`object`， `number`， `boolean`， `undefined`， `null`， `string`， `any`， `number[]`， `Array<number>`， `<string， number>`， `enum`，
+`void` 和 `null`。
+
+变量定义类型后如果被赋值为其他类型、调用其他类型方法就会报错，`any` 不受影响。
+
+`Object` 和 `{}` 在 typescript 中代表任何类型，可以赋值任何类型的值。
+
+`object` 代表引用类型，可以赋值引用类型的值。
+
+### undefined, null and void
+`void` 用于没有任何返回值的函数。
+
+`undefined` 和 `null` 是所有类型的子类型。也就是说 `undefined` 类型的变量，可以赋值给 `number` 类型的变量：
+
+而 `void` 类型的变量不能赋值给 `number` 类型的变量
+
+### unknown, any
+`any` 和 `unknown` 可以接收任何类型的值。
+
+可以对 `any` 做任何操作和赋值，typescript 不校验。
+
+`unknown` 只能赋值给自身或 `any`，无法读取其任何属性。
+
+### 数组的类型
+
+#### 类型+方括号
+
+```typescript
+// 数组的项中不允许出现其他的类型
+let fibonacci: number[] = [1, 1, 2, 3, 5];
+```
+
+#### 元组
+元组和联合类型相似，当不确定类型时，只能访问或调用数组内元素共有的属性或方法
+
+```typescript
+//  定义了一个长度为2，第一位是string类型，第二位是number类型
+let x: [string, number]
+x = ['h', 1]
+```
+
 ## Union Types
 Union Types represents values that may be any one of those types. Each of these type is union's member.
 
@@ -27,7 +95,6 @@ It's easy to provide a value matching the union type - provide a type matching a
 But TypeScript only allows an operation if it's valid for every member of the union. If you want to operate one of the union's member,
 narrow the union. The same as we would do in JavaScript.
 
-
 ## Type Aliases
 Type alias can name any type such as union type, object type.
 
@@ -42,14 +109,67 @@ type Point = {
 ## Interfaces
 An interface declaration is another way to name an object type.
 
+Interface works as type alias does. TypeScript only concerned with the structure of the value.
 ```typescript
 interface Point {
   x: number;
   y: number;
+  // optional
+  z?: number;
+  // 索引签名
+  [propName: string]: any;
+  readonly id: number
 }
 ```
 
-Interface works as type alias does. TypeScript only concerned with the structure of the value.
+### 索引签名
+索引签名可以省去定义不关注的属性，关注指明的属性类型定义。
+
+需要注意的是：**一旦定义了索引签名`，那么确定属性和可选属性的类型都必须是它的类型的子集**：
+
+例如：
+```typescript
+interface Person {
+    name: string;
+    age?: number;
+    [propName: string]: string;
+}
+
+//  报错
+let tom: Person = {
+    name: 'Tom',
+    age: 25,
+    gender: 'male'
+};
+```
+
+上例中，任意属性的值允许是 `string`，但是可选属性 `age` 的值却是 `number`，`number` 不是 `string` 的子属性，所以报错了。
+
+### extends
+继承其他 `interface` 的类型。
+
+```typescript
+interface A extends B {
+    a: number
+}
+interface B {
+    b: string
+}
+```
+
+上面的例子会校验 `a` 和 `b` 两个属性。
+
+### 定义函数类型
+
+```typescript
+interface Fn {
+    (name: string): number[]
+}
+
+const fn:Fn = function (name: string) {
+    return [1];
+}
+```
 
 ## Differences Between Type Aliases and Interfaces
 The key distinction is that a type cannot be re-opened to add new properties vs an interface which is always extendable:
@@ -94,7 +214,32 @@ type Window = {
 // Error: Duplicate identifier 'Window'.
 ```
 
+## 枚举类型
+```typescript
+enum Color {
+  Red,
+  Blue,
+  Greed
+}
+
+let c: Color = Color.Red
+```
+
+也能通过值反查键名
+
+```typescript
+enum Color {
+  Red = 1,
+  Green = 2,
+  Blue = 4,
+}
+
+let r: string = Color[2]
+```
+
 ## Type Assertions
+Type Assertions allows us to override typescript inference.
+
 We use `as` or the angle-bracket syntax (except if the code is in a .tsx file).
 
 TypeScript only allows type assertions which convert to a more specific or less specific version of a type. This rule prevents from
@@ -104,6 +249,26 @@ Sometimes this rule can be too conservative and will disallow more complex coerc
 you can use two assertions, first to `any` , then to the desired type:
 
 `const a = (expr as any) as T;`
+
+```typescript
+const foo = {};
+foo.bar = 123; // Error: 'bar' 属性不存在于 ‘{}’
+foo.bas = 'hello'; // Error: 'bas' 属性不存在于 '{}'
+```
+
+这里的代码发出了错误警告，因为 `foo` 的类型推断为 `{}`，即是具有零属性的对象。因此，你不能在它的属性上添加 `bar` 或 `bas`，你可以通过类型断言
+来避免此问题：
+
+```typescript
+interface Foo {
+  bar: number;
+  bas: string;
+}
+
+const foo = {} as Foo;
+foo.bar = 123;
+foo.bas = 'hello';
+```
 
 ## Literal Types
 Literal Types allow us to refer to specific strings and numbers in type positions.
