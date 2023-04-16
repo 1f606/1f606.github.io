@@ -64,11 +64,31 @@ ts-node fileName
 
 ### 数组的类型
 
-#### 类型+方括号
+#### 类型+方括号和泛型
 
 ```typescript
 // 数组的项中不允许出现其他的类型
 let fibonacci: number[] = [1, 1, 2, 3, 5];
+
+interface m {
+    name: string
+}
+const items: m[] = [{name: ''}];
+
+// 二维数组
+const nums: number[][] = [[1]]
+
+const nums: Array<Array<number>> = [[1]];
+
+// 内置伪数组类型
+const args: IArguments = arguments;
+
+// 原理
+interface IArguments {
+    callee: Function;
+    length: number;
+    [index: number]: any;
+}
 ```
 
 #### 元组
@@ -78,6 +98,23 @@ let fibonacci: number[] = [1, 1, 2, 3, 5];
 //  定义了一个长度为2，第一位是string类型，第二位是number类型
 let x: [string, number]
 x = ['h', 1]
+```
+
+### 函数
+可以在函数参数的第一个参数定义 `this` 的类型，实际运行会被忽略，用于增强编辑器的提示。
+
+#### 函数重载
+```typescript
+function find (id:number):number[]
+function find (ids: number[] | number):number[] {
+    if (Array.isArray(ids)) {
+        return [1];
+    } else if (typeof ids === 'number') {
+        return [1];
+    } else {
+        return [2];
+    }
+}
 ```
 
 ## Union Types

@@ -39,7 +39,7 @@
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/CODE/1f606.github.io/_posts/JavaScript/Web Component&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/CODE/1f606.github.io/_posts/Cordova&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -51,11 +51,11 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\CODE\1f606.github.io\_posts\JavaScript\Web Component" />
+      <recent name="D:\CODE\1f606.github.io\_posts\Cordova" />
       <recent name="D:\CODE\1f606.github.io\_posts\JavaScript\性能优化" />
+      <recent name="D:\CODE\1f606.github.io\_posts\JavaScript\Web Component" />
       <recent name="D:\CODE\1f606.github.io\_posts\浏览器\动画" />
       <recent name="D:\CODE\1f606.github.io\_posts\浏览器\Frame和window" />
-      <recent name="D:\CODE\1f606.github.io\_posts\SQL" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\CODE\1f606.github.io\_posts\浏览器\安全" />
@@ -196,6 +196,9 @@
       <workItem from="1681312670366" duration="1803000" />
       <workItem from="1681398176566" duration="1445000" />
       <workItem from="1681477964753" duration="4487000" />
+      <workItem from="1681484573136" duration="620000" />
+      <workItem from="1681545359499" duration="6729000" />
+      <workItem from="1681657319859" duration="876000" />
     </task>
     <task id="LOCAL-00002" summary="update">
       <created>1669472616596</created>
@@ -526,7 +529,14 @@
       <option name="project" value="LOCAL" />
       <updated>1681314491537</updated>
     </task>
-    <option name="localTasksCounter" value="49" />
+    <task id="LOCAL-00049" summary="update">
+      <created>1681488138425</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1681488138425</updated>
+    </task>
+    <option name="localTasksCounter" value="50" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
