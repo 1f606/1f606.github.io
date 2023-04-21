@@ -6,6 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="541d2127-49de-4f5a-883f-d0e147a46c7b" name="Changes" comment="update">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/Cordova/2023-4-15-Cordova基础.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/Cordova/2023-4-15-Cordova基础.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/JavaScript/Web Component/2023-4-7-Shadow Dom样式.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/JavaScript/Web Component/2023-4-7-Shadow Dom样式.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,7 +40,7 @@
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/CODE/1f606.github.io/_posts/Cordova&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/CODE/1f606.github.io/_posts/JavaScript/Web Component&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -50,11 +52,11 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\CODE\1f606.github.io\_posts\JavaScript\Web Component" />
+      <recent name="D:\CODE\1f606.github.io\_posts\JavaScript" />
       <recent name="D:\CODE\1f606.github.io\_posts\Cordova" />
       <recent name="D:\CODE\1f606.github.io\_posts\JavaScript\性能优化" />
-      <recent name="D:\CODE\1f606.github.io\_posts\JavaScript\Web Component" />
       <recent name="D:\CODE\1f606.github.io\_posts\浏览器\动画" />
-      <recent name="D:\CODE\1f606.github.io\_posts\浏览器\Frame和window" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\CODE\1f606.github.io\_posts\浏览器\安全" />
@@ -192,13 +194,8 @@
       <workItem from="1681545359499" duration="6729000" />
       <workItem from="1681657319859" duration="895000" />
       <workItem from="1681906442159" duration="107000" />
-    </task>
-    <task id="LOCAL-00002" summary="update">
-      <created>1669472616596</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1669472616596</updated>
+      <workItem from="1682000782471" duration="2233000" />
+      <workItem from="1682088637454" duration="1649000" />
     </task>
     <task id="LOCAL-00003" summary="update">
       <created>1669562032964</created>
@@ -536,7 +533,14 @@
       <option name="project" value="LOCAL" />
       <updated>1681659590839</updated>
     </task>
-    <option name="localTasksCounter" value="51" />
+    <task id="LOCAL-00051" summary="update">
+      <created>1682004285819</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1682004285819</updated>
+    </task>
+    <option name="localTasksCounter" value="52" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
