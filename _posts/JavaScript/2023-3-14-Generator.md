@@ -10,9 +10,7 @@ tags:
     - Generator
 ---
 # Generator
-Generator 函数是一个状态机，封装了多个内部状态。
-
-Generator 函数除了状态机，还是一个遍历器对象生成函数。返回的遍历器对象，可以依次遍历 Generator 函数内部的每一个状态。
+Generator 函数是一个状态机，封装了多个内部状态。运行后返回的遍历器对象，可以依次遍历 Generator 函数内部的每一个状态。
 
 Generator 函数的语法：一是在function关键字和函数名之间有一个星号；二是，函数体内可以使用yield定义状态。
 
@@ -20,13 +18,19 @@ Generator 函数调用后的返回值是指向内部状态的指针对象。需�
 
 指针对象还有 value 属性，值是 yield 后跟着的表达式返回的值，如果函数已经执行完就是 undefined；以及 done 属性表示函数是否执行完成。
 
-Generator 函数是分段执行的，yield表达式是暂停执行的标记，而next方法可以恢复执行。
+Generator 函数是分段执行的，yield表达式是暂停执行的标记，而指针对象的 next 方法可以恢复执行。
 
-yield表达式如果用在另一个表达式之中，必须放在圆括号里面。`console.log('Hello' + (yield));`
+yield表达式如果用在另一个表达式之中，必须放在圆括号里面。如 `console.log('Hello' + (yield));`。
+
+yield表达式用作函数参数或放在赋值表达式的右边，可以不加括号。如：
+```
+function* demo() {
+  foo(yield 'a', yield 'b');
+  let input = yield;
+}
+```
 
 generator 是可迭代的，可以使用 iterator 的所有相关功能，例如：spread 语法 和 for of。
-
-generator 会忽略return，next方法迭代不会忽略return。
 
 ```javascript
 function * foo () {
@@ -75,6 +79,33 @@ iterator.next();
 （4）如果该函数没有return语句，则返回的对象的value属性值为undefined。
 
 需要注意的是，yield表达式后面的表达式，只有当调用next方法、内部指针指向该语句时才会执行，因此等于为 JavaScript 提供了手动的“惰性求值”（Lazy Evaluation）的语法功能。
+
+例如：`yield 123 + 456;`
+
+yield后面的表达式123 + 456，不会立即求值，只会在 next 方法将指针移到这一句时，才会求值。
+
+Generator 函数可以不用yield表达式，这时就变成了一个单纯的暂缓执行函数。
+
+```
+const arr = [1, [2, 3], 4], [5, 6]];
+
+const flat = function* (a) {
+  const length = a.length;
+  for (let i = 0; i < length; i++) {
+    const item = a[i];
+    if (typeof item !== 'number') {
+      yield* flat(item);
+    } else {
+      yield item;
+    }
+  }
+}
+
+for (const f of flat(arr)) {
+  // 1,2,3,4,5,6
+  console.log(f);
+}
+```
 
 ## Iterable object（可迭代对象）
 任意一个对象的Symbol.iterator方法，等于该对象的遍历器生成函数，调用该函数会返回该对象的一个遍历器对象。
