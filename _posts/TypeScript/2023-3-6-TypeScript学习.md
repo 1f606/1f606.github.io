@@ -12,7 +12,7 @@ tags:
 # TypeScript from scratch
 定义类型的方法：在标识符、函数的小括号后添加冒号和类型。
 
-## 基础
+## 环境
 
 ```shell
 #安装
@@ -28,43 +28,107 @@ tsc -w
 tsc fileName
 ```
 
-### 环境
-
 ```shell
 npm i ts-node -g
 npm i @types/node -D
 
-# 使用
+# 可以直接运行 typescript 文件
 ts-node fileName
 ```
 
-## 基础类型
-`Object`，`object`， `number`， `boolean`， `undefined`， `null`， `string`， `any`， `number[]`， `Array<number>`， `<string， number>`， `enum`，
-`void` 和 `null`。
+## 类型
+原始类型包括：`number`， `boolean`，`string`，`undefined`， `null`，`bigInt`, `symbol`。
+
+`Object`，`object`，`any`， `number[]`， `Array<number>`，`<string， number>`， `enum`，`void`。
 
 变量定义类型后如果被赋值为其他类型、调用其他类型方法就会报错，`any` 不受影响。
 
-`Object` 和 `{}` 在 typescript 中代表任何类型，可以赋值任何类型的值。
+### Number, String, Boolean, Symbol
+首字母大写的Number String Boolean Symbol很容易与小写的原始类型number string boolean symbol混淆，前者是相应原始类型的包装对象。
 
-`object` 代表引用类型，可以赋值引用类型的值。
+原始类型可以赋值给包装对象类型，包装对象类型无法赋值给对应的原始类型。
+
+不要用包装对象类型注解。
+### 大小Object 和 空对象字面量
+小object `object` 代表引用类型，可以赋值引用类型的值。
+
+大object `Object` 代表所有拥有toString hasOwnProperty方法的类型。所以，所有原始类型和非原始类型都可以赋值给大Object。
+
+空对象和大Object可以互相代替，它们两的特性一致。
+
+在严格模式下 null 和 undefined 类型不能赋给大小 Object。
+
+大Object包含原始类型，而小object仅包含非原始类型。那么大Object是不是小object的父类型？实际上，大Object不仅是小object的父类型，同时也是小
+object的子类型。
+
+```typescript
+type FatherType = object extends Object ? true : false; // true
+type ChildType  = Object extends object ? true : false; // true
+```
 
 ### undefined, null and void
-`void` 用于没有任何返回值的函数。
+`void` 一般用于没有任何返回值的函数。不能用来赋值。
 
-`undefined` 和 `null` 是所有类型的子类型。也就是说 `undefined` 类型的变量，可以赋值给 `number` 类型的变量：
+`undefined` 和 `null` 是所有类型的子类型。也就是可以赋值给任何类型。
 
-而 `void` 类型的变量不能赋值给 `number` 类型的变量
+如果在tsconfig.json里配置了"strictNullChecks": true，null就只能赋值给any、unknown和它本身的类型（null），undefined就只能赋值给any、
+unknown、void和它本身的类型（undefined）。
+
+### never
+never 类型表示的是那些永不存在的值的类型。never 也是所有类型的子类型。可以赋值给任何类型。但没有任何类型是 never 的子类型。
+
+值会永不存在的两种情况：
+- 如果一个函数执行时抛出了异常，那么这个函数就永远不存在返回值。
+- 函数中执行无限循环的代码，也就是死循环。
+
+在 typescript 中，可以用 `never` 实现全面性检查。
+
+```typescript
+type Type = string | number;
+
+function inspectWithNever (param: Type) {
+    if (typeof param === 'string') {
+    } else if (typeof param === 'number') {
+        // 到这里是 never 类型
+        const check: never = param;
+    }
+}
+```
+
+假如后面 Type 被修改为：
+```typescript
+type TYpe = string | number | boolean;
+```
+
+那么编译就会失败，因为 boolean 无法赋值给 never。
+
+通过这种方法，保证了类型的绝对安全。
 
 ### unknown, any
-`any` 和 `unknown` 可以接收任何类型的值。
+所有类型都可以被分配给 `any` 和 `unknown`。
 
-可以对 `any` 做任何操作和赋值，typescript 不校验。
+`unknown` 只能赋值给自身或 `any`；`any` 可以赋值给任何类型（never除外）。
 
-`unknown` 只能赋值给自身或 `any`，无法读取其任何属性。
+如果不缩小类型，无法对 `unknown` 做任何操作。
+
+### narrow缩小类型
+缩小类型用 typeof 或类型断言。
+
+```typescript
+const a:unknown = '1';
+
+// error
+a.split('');
+
+if (typeof a === 'string') a.split();
+
+// 类型断言
+(a as string).split('');
+```
 
 ### 数组的类型
 
-#### 类型+方括号和泛型
+#### 类型+方括号
 
 ```typescript
 // 数组的项中不允许出现其他的类型
@@ -75,11 +139,6 @@ interface m {
 }
 const items: m[] = [{name: ''}];
 
-// 二维数组
-const nums: number[][] = [[1]]
-
-const nums: Array<Array<number>> = [[1]];
-
 // 内置伪数组类型
 const args: IArguments = arguments;
 
@@ -89,10 +148,23 @@ interface IArguments {
     length: number;
     [index: number]: any;
 }
+
+// 联合类型
+let arr: (number | string)[] = [1, '1'];
+```
+
+#### 泛型
+
+```typescript
+const nums: number[][] = [[1]]
+
+const nums: Array<Array<number>> = [[1]];
 ```
 
 #### 元组
-元组和联合类型相似，当不确定类型时，只能访问或调用数组内元素共有的属性或方法
+元组可以限制数组个数和每个元素的类型。
+
+当不确定类型时，只能访问或调用数组内元素共有的属性或方法
 
 ```typescript
 //  定义了一个长度为2，第一位是string类型，第二位是number类型
@@ -100,12 +172,59 @@ let x: [string, number]
 x = ['h', 1]
 ```
 
+##### 可选元素
+
+```typescript
+let arr:[string, boolean?];
+
+arr = ['1'];
+```
+
+##### 剩余元素
+元组类型里最后一个元素可以是剩余元素，形式为...x
+
+```typescript
+let arr: [number, ...string[]];
+```
+
+##### 只读
+可以为任何元组类型加上readonly关键字前缀，使其成为只读元组
+
+```typescript
+const arr: readonly [string, number] = ['1', 666];
+```
+
 ### 函数
 可以在函数参数的第一个参数定义 `this` 的类型，实际运行会被忽略，用于增强编辑器的提示。
 
+#### 可选参数
+
+```typescript
+// 函数表达式
+const sum = function(name: string, age?: number) {
+    // ...
+}
+```
+
+注意：可选参数后不能出现必需参数。
+
+#### 参数默认值
+
+```typescript
+function query(sex: string = '1') {
+}
+```
+
+#### 剩余参数
+
+```typescript
+function push(arr: any[], ...items: any[]) {
+}
+```
+
 #### 函数重载
 ```typescript
-function find (id:number):number[]
+function find (id: number):number[]
 function find (ids: number[] | number):number[] {
     if (Array.isArray(ids)) {
         return [1];
@@ -274,68 +393,10 @@ enum Color {
 let r: string = Color[2]
 ```
 
-## Type Assertions
-Type Assertions allows us to override typescript inference.
+## typescript inference
+TS 会根据上下文环境自动地推断出变量、函数的返回值等的类型，无需我们再写明类型注解。这是 TS 的类型推断能力。
 
-We use `as` or the angle-bracket syntax (except if the code is in a .tsx file).
-
-TypeScript only allows type assertions which convert to a more specific or less specific version of a type. This rule prevents from
-converting type to no intersection type unless you convert to `unknown` first.
-
-Sometimes this rule can be too conservative and will disallow more complex coercions that might be valid. If this happens,
-you can use two assertions, first to `any` , then to the desired type:
-
-`const a = (expr as any) as T;`
-
-```typescript
-const foo = {};
-foo.bar = 123; // Error: 'bar' 属性不存在于 ‘{}’
-foo.bas = 'hello'; // Error: 'bas' 属性不存在于 '{}'
-```
-
-这里的代码发出了错误警告，因为 `foo` 的类型推断为 `{}`，即是具有零属性的对象。因此，你不能在它的属性上添加 `bar` 或 `bas`，你可以通过类型断言
-来避免此问题：
-
-```typescript
-interface Foo {
-  bar: number;
-  bas: string;
-}
-
-const foo = {} as Foo;
-foo.bar = 123;
-foo.bas = 'hello';
-```
-
-## Literal Types
-Literal Types allow us to refer to specific strings and numbers in type positions.
-
-For example:
-```
-const str = 'hello world'; // string type
-
-let str: 'hello world' = 'hello world' // 'hello world' type
-
-const str: 'hello world' // same as above code
-```
-now, str can not assign other value except 'hello world'.
-
-It's useful to express a type of certain set of known values.
-
-For example:
-```typescript
-function printText(s: string, alignment: "left" | "right" | "center") {
-  // ...
-}
-function compare(a: string, b: string): -1 | 0 | 1 {
-    return a === b ? 0 : a > b ? 1 : -1;
-}
-```
-
-you can combine these with non-literal types.
-
-Note that there’s one more kind of literal type: boolean literals, with only two boolean literal types. true and false.
-It is actually just an alias for the union true | false.
+如果定义的时候没有赋值，不管之后有没有赋值，都会被推断为any类型。
 
 ## Literal Inference
 TypeScript can infer the type of the property of Object.
@@ -374,22 +435,50 @@ const req = { url: "https://example.com", method: "GET" } as const;
 ```
 The as const suffix acts like const but for the type system
 
-## null and undefined
-`null` and `undefined` are used to signal absent or uninitialized value.
+## Type Assertions
+Type Assertions allows us to override typescript inference.
 
-TypeScript has two corresponding types by the same names. How these types behave depends on whether you have the 
-`strictNullChecks` option on.
+```typescript
+const arr: number[] = [1, 2, 3];
+const res: number = arr.find(num => num > 2); // Type 'undefined' is not assignable to type 'number'
+```
 
-### strictNullChecks off
-With strictNullChecks off, values that might be null or undefined can still be accessed normally, and the values null 
-and undefined can be assigned to a property of any type.
+We use `as` or the angle-bracket syntax (except if the code is in a .tsx file), so better use `as`.
 
-### strictNullChecks on
-With strictNullChecks on, when a value is null or undefined, you will need to test for those values before using methods
-or properties on that value.
+```typescript
+const res: number = arr.find(num => num > 2) as number;
+```
+
+TypeScript only allows type assertions which convert to a more specific or less specific version of a type. This rule 
+prevents from converting type to no intersection type unless you convert to `unknown` first.
+
+Sometimes this rule can be too conservative and will disallow more complex coercions that might be valid. If this happens,
+you can use two assertions, first to `any` , then to the desired type:
+
+`const a = (expr as any) as T;`
+
+```typescript
+const foo = {};
+foo.bar = 123; // Error: 'bar' 属性不存在于 ‘{}’
+foo.bas = 'hello'; // Error: 'bas' 属性不存在于 '{}'
+```
+
+这里的代码发出了错误警告，因为 `foo` 的类型推断为 `{}`，即是具有零属性的对象。因此，你不能在它的属性上添加 `bar` 或 `bas`，你可以通过类型断言
+来避免此问题：
+
+```typescript
+interface Foo {
+  bar: number;
+  bas: string;
+}
+
+const foo = {} as Foo;
+foo.bar = 123;
+foo.bas = 'hello';
+```
 
 ## Non-null Assertion Operator (Postfix`!`)
-TypeScript also has a special syntax for removing null and undefined from a type without doing any explicit checking. 
+TypeScript has a special syntax for removing null and undefined from a type without doing any explicit checking.
 Writing `!` after any expression is effectively a type assertion that the value isn’t null or undefined:
 
 ```typescript
@@ -399,6 +488,113 @@ function liveDangerously(x?: number | null) {
 }
 ```
 
+## 确定赋值断言
+通过let x!: number确定赋值断言，TS 编译器就会知道该属性会被明确地赋值。
+
+```typescript
+let x: number;
+init();
+
+console.log(x + 1); // Variable 'x' is used before being assigned
+
+function init() {
+    x = 1;
+}
+
+// 确定赋值断言
+let x!:number;
+```
+
+## Literal Types
+Literal Types allow us to refer to specific strings, numbers or boolean in type positions.
+
+Literal Type is subType of string type, so type string is not assignable to Literal Type, while Literal Type is assignable 
+to string type.
+
+It's usually used in union type to describe explicit members.
+
+Boolean literal types. true and false is actually just an alias for the union true | false.
+
+For example:
+```typescript
+const str = 'hello world'; // string type
+
+let str: 'hello world' = 'hello world' // 'hello world' type
+
+const str: 'hello world' // same as above code
+```
+
+```typescript
+function printText(s: string, alignment: "left" | "right" | "center") {
+  // ...
+}
+function compare(a: string, b: string): -1 | 0 | 1 {
+    return a === b ? 0 : a > b ? 1 : -1;
+}
+```
+
+### let,const
+TS 的字面量子类型自动转换成对应的原始值类型的这种设计称之为字面量类型的拓宽
+
+```typescript
+// 用const定义不可变的常量，在没有添加类型注解的情况下，TS 推断出常量的类型为赋值字面量的类型。
+const str = '我还以为你从来都不会选我呢'; // str: '我还以为你从来都不会选我呢'
+const num = 1; // num: 1
+const bool = true; // bool: true
+
+// 使用let定义的变量显式地添加类型注解，但是变量的类型自动地转换成了赋值字面量类型的原始值类型。
+let str = '我还以为你从来都不会选我呢'; // str: string
+let num = 1; // num: number
+let bool = true; // bool: boolean
+```
+
+## 类型拓宽
+所有通过let和var定义的变量、函数的形参、对象的非只读属性，如果满足指定了初始值且未显式添加类型注解的条件，那么它们推断出来的类型就是指定的初始值
+字面量类型拓宽后的类型，这就是字面量类型拓宽。
+
+```typescript
+let fn = (x = '奉均衡之命!') => x; // fn: (x?: string) => string
+
+const a = '明智之选'; // a: '明智之选'
+let b = a; // b: string
+let func = (c = a) => c; // func: (c?: string) => string 
+```
+
+对null和undefined的类型也会进行拓宽，通过let var定义的变量如果满足未显式添加类型注解且被赋予了null或undefined值，则推断出这些变量的类型为any.
+
+```typescript
+let x = null; // x: any
+let y = undefined; // y: any
+
+const a = null; // a: null;
+const b = undefined; // b: undefined
+```
+
+### 例子
+
+```typescript
+type ObjType = {
+    a: number;
+    b: number;
+    c: number;
+}
+
+type KeyType = 'a' | 'b' | 'c';
+
+function fn(object: ObjType, key: KeyType) {
+    return object[key];
+}
+
+let object = {a: 123, b: 456, c: 789};
+let key = 'a';
+fn(object, key); // Argument of type 'string' is not assignable to parameter of type '"a" | "b" | "c"'
+```
+
+这是因为变量key的类型被推断成了string类型（类型拓宽），但是函数期望它的第二个参数是一个更具体的类型，所以报错。
+
+TS 提供了一些控制拓宽过程的方法，其中一种是使用const，如果用const声明一个变量，那么它的类型会更窄。
+
+所以在本例中将 `let key = 'a'` 改成 `const` 声明即可解决。
 
 ## 资料
 https://www.typescriptlang.org
