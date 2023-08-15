@@ -805,6 +805,36 @@ const trump: Person = {
 }
 ```
 
+## module
+declare is used to describe the API the library that is not written in Typescript expose.
+
+First, create a file ends with .d.ts. Then use the module keyword and quoted name of this module which will be use 
+in later import.
+
+a example of the API that nodejs expose.
+
+// node.d.ts (simplified excerpt)
+declare module "url" {
+    export interface Url {
+        protocol?: string;
+        hostname?: string;
+        pathname?: string;
+    }
+    export function parse (
+        urlStr: string,
+        parseQueryString?,
+        slashesDenoteHOst?
+    ): Url;
+}
+
+Now we can `/// <reference> node.d.ts` and then load the modules using `import url = require("url");` or `import * as URL from "url"`
+
+```typescript
+/// <reference path="node.d.ts"/>
+import * as URL from "url";
+let myUrl = URL.parse("https://www.typescriptlang.org");
+```
+
 ## 泛型
 泛型能够根据类型自动进行推导和检查。例如一个接收什么类型就返回什么类型的函数：
 
