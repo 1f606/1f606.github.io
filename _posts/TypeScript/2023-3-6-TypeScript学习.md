@@ -813,6 +813,7 @@ in later import.
 
 a example of the API that nodejs expose.
 
+```typesciprt
 // node.d.ts (simplified excerpt)
 declare module "url" {
     export interface Url {
@@ -826,6 +827,7 @@ declare module "url" {
         slashesDenoteHOst?
     ): Url;
 }
+```
 
 Now we can `/// <reference> node.d.ts` and then load the modules using `import url = require("url");` or `import * as URL from "url"`
 
