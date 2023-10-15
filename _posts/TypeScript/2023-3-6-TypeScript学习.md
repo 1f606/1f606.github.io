@@ -351,6 +351,55 @@ interface B {
 
 上面的例子会校验 `a` 和 `b` 两个属性。
 
+interface的 extends 从句是可以跟着多个组合对象，多个组合对象之间用逗号,隔开。类也能作为组合对象。
+
+在 TypeScript 中，类既是值也是类型。 interface extends class 是组合了 class 的类型，忽略了实现代码。
+
+```typescript
+class SomeClass {
+    private name!: string
+    updateName(name: string) {
+        this.name = name || '';
+    }
+}
+
+// 上面的 class 从类型的角度看等同于
+interface SomeClass {
+    name: string
+    updateName: (name:string)=> void
+}
+
+interface Parent extends SomeClass {
+    value: string
+}
+```
+
+### implements
+implements clause is used to check that a class satisfies a particular interface。Classes may also implement single 
+or multiple interfaces at once.
+
+类实现接口后，TypeScript 会校验其类型。但类的类型没有被改变（目前这么解释）。
+
+```typescript
+interface Checkable {
+    check(name: string): boolean;
+}
+class NameChecker implements Checkable {
+    check(s) {
+        // 报错 Parameter 's' implicitly has an 'any' type.
+        return s.toLowerCase() === "ok";
+    }
+}
+```
+
+如果是用 interface extends 来实现上面的代码，不会提示上面的报错。说明 extends 也继承了对应 interface 内部函数或属性的类型。
+
+另外一个情况：类 implements 有可选属性的接口，类并不能给可选属性赋值。会提示这个属性在类上并不存在。`extends` 可以。
+
+// TODO
+https://juejin.cn/post/6844904034621456398?searchId=2023081711080054732E726A95A8E2D3E1
+https://juejin.cn/post/7199447328306364473?searchId=2023081711080054732E726A95A8E2D3E1
+
 ### 定义函数类型
 
 ```typescript
