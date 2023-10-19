@@ -1329,6 +1329,49 @@ type NonNullable<T> = T extends null | undefined ? never : T;
 type A = NonNullable<string | null | undefined>; // string
 ```
 
+## Ambient Declarations
+在.d.ts后缀的文件中编写声明代码，起到文档的作用。
+
+如果源码更改，声明文件也需要更改，否则会编译报错。
+
+在声明文件顶层，要用 declare 关键字声明。
+
+```typescript
+// A 和 B 效果相同，但更推荐B
+// Sample A
+declare var myPoint: { x: number; y: number; };
+
+// Sample B
+interface Point {
+    x: number; y: number;
+}
+
+declare var myPoint: Point;
+```
+
+```typescript
+// Lib a.d.ts
+interface Point {
+x: number; y: number;
+}
+declare var myPoint: Point;
+
+// Lib b.d.ts
+interface Point {
+z: number;
+}
+// todo why?
+var myPoint.z; // Allowed!
+```
+
+## global.d.ts
+
+```typescript
+declare module "*.css";
+declare module "*.html";
+// 这样声明后就能导入这两种文件
+```
+
 ## 优化点
 ### 减少重复代码
 
