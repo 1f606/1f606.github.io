@@ -946,6 +946,56 @@ function fn<T extends ArgType>(arg: T): T {
 
 // TODO 直接将函数的参数限定为 ArgType 类型，会有类型丢失的风险？
 
+## generic interfaces
+In this section, we’ll explore the type of a identity function and how to create generic interfaces.
+
+```typescript
+// similarly to function declaration
+function identity<Type>(arg: Type): Type {
+  return arg;
+}
+ 
+let myIdentity: <Type>(arg: Type) => Type = identity;
+```
+
+We can also write the generic type as a call signature of an object literal type:
+
+```typescript
+function identity<Type>(arg: Type): Type {
+  return arg;
+}
+ 
+let myIdentity: { <Type>(arg: Type): Type } = identity;
+```
+
+let's move the previous example to an interface:
+
+```typescript
+interface GenericIdentityFn {
+  <Type>(arg: Type): Type;
+}
+ 
+function identity<Type>(arg: Type): Type {
+  return arg;
+}
+ 
+let myIdentity: GenericIdentityFn = identity;
+```
+
+we can make the generic parameter to be the parameter of the whole interface. This makes the type parameter visible to all the other members of the interface.
+
+```typescript
+interface GenericIdentityFn<Type> {
+  (arg: Type): Type;
+}
+ 
+function identity<Type>(arg: Type): Type {
+  return arg;
+}
+ 
+let myIdentity: GenericIdentityFn<number> = identity;
+```
+
 ### 泛型工具类型
 为了方便开发者，TS 内置了一些常见的工具类型，例如：Partial、Required、Readonly、Record 等等。在具体学习工具类型之前，我们先得了解一些基础知识。
 
