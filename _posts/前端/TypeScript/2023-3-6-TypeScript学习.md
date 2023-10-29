@@ -643,7 +643,7 @@ to string type.
 
 It's usually used in union type to describe explicit members.
 
-Boolean literal types. true and false is actually just an alias for the union true | false.
+Boolean literal types. true and false is actually just an alias for the union `true | false`.
 
 For example:
 ```typescript
