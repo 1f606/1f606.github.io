@@ -523,6 +523,38 @@ enum Color {
 let r: string = Color[2]
 ```
 
+## []
+[] 传入的是类型，例如：
+```typescript
+type Person = {
+  age: number;
+  name: string;
+  alive: boolean;
+};
+
+type Age = Person['age'];
+// or
+type key = 'age';
+type Age = Person[key];
+```
+
+TODO 不理解
+第一个示例中的最终取得的类型是number，因为含有string类型的索引签名对应的属性类型就是number。
+
+第二个示例中会得到元组中所有元素的类型组成的联合类型，因为其实元组的索引都是number类型的，所以可以一次全部取到所有元素的类型。
+
+示例1：
+interface Test {
+    [p: string]: number
+}
+// number
+type stringTypes = Test[string]
+
+示例2：
+type tuple = ['1', 1, true]
+// true | "1" | 1
+type allTypes = tuple[number]
+
 ## typescript inference
 TS 会根据上下文环境自动地推断出变量、函数的返回值等的类型，无需我们再写明类型注解。这是 TS 的类型推断能力。
 
