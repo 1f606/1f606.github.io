@@ -1024,7 +1024,7 @@ type FnType = typeof fn; // (x: string) => string[]
 ```
 
 #### keyof
-keyof操作符可以用来获取某种类型的所有键，其返回类型是联合类型：
+keyof 操作符可以用来获取某种类型的所有键，其返回类型是联合类型：
 
 ```typescript
 interface Person {
@@ -1066,7 +1066,7 @@ function fn(obj: object, key: string) {
 么如何限制属性名的范围内？这时候就需要keyof。
 
 ```typescript
-function fn<T extends object, K extends keyof T>(obj: T, key: K) {
+function fn<T extends object, K extends keyof T>(obj: T, key: K): T[K] {
     return obj[key];
 }
 ```
@@ -1078,7 +1078,7 @@ function fn<T extends object, K extends keyof T>(obj: T, key: K) {
 此时这个函数调用时访问不存在的属性也会报错。
 
 #### in
-in用来遍历枚举类型
+in 用来获取联合类型，主要用于数组或对象的构建。不要用在 interface，会报错，用在 type 上。
 
 ```typescript
 type Keys = 'x' | 'y' | 'z';
