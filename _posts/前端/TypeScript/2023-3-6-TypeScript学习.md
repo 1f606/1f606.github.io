@@ -126,6 +126,11 @@ if (typeof a === 'string') a.split();
 (a as string).split('');
 ```
 
+#### truthiness narrowing
+0, NaN, 0n, '', null and undefined all coerce to false, and other values get coerced to true.
+
+You can always coerce values to booleans by running them through the Boolean function, or by using the shorter double-Boolean negation. (The latter has the advantage that TypeScript infers a narrow literal boolean type true, while inferring the first as type boolean.)
+
 ### 数组的类型
 
 #### 类型+方括号
