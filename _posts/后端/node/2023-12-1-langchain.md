@@ -1,0 +1,560 @@
+---
+layout:     post
+title:      LangChain 学习
+subtitle:   
+date:       2023-12-1
+author:     sq
+header-img: 
+catalog: true
+tags:
+    - LangChain
+---
+## 例子
+### Prompt + LLM
+```javascript
+import { PromptTemplate } from "langchain/prompts";
+import { ChatOpenAI } from "langchain/chat_models/openai";
+
+const model = new ChatOpenAI({});
+const promptTemplate = PromptTemplate.fromTemplate(
+  "Tell me a joke about {topic}"
+);
+
+const chain = promptTemplate.pipe(model);
+
+const result = await chain.invoke({ topic: "bears" });
+
+console.log(result);
+
+/*
+  AIMessage {
+    content: "Why don't bears wear shoes?\n\nBecause they have bear feet!",
+  }
+*/
+```
+
+```javascript
+import { PromptTemplate } from "langchain/prompts";
+import { ChatOpenAI } from "langchain/chat_models/openai";
+
+const prompt = PromptTemplate.fromTemplate(`Tell me a joke about {subject}`);
+
+const model = new ChatOpenAI({});
+
+const functionSchema = [
+  {
+    name: "joke",
+    description: "A joke",
+    parameters: {
+      type: "object",
+      properties: {
+        setup: {
+          type: "string",
+          description: "The setup for the joke",
+        },
+        punchline: {
+          type: "string",
+          description: "The punchline for the joke",
+        },
+      },
+      required: ["setup", "punchline"],
+    },
+  },
+];
+
+const chain = prompt.pipe(
+  model.bind({
+    functions: functionSchema,
+    function_call: { name: "joke" },
+  })
+);
+
+const result = await chain.invoke({ subject: "bears" });
+
+console.log(result);
+
+/*
+  AIMessage {
+    content: "",
+    additional_kwargs: {
+      function_call: {
+        name: "joke",
+        arguments: '{\n  "setup": "Why don\'t bears wear shoes?",\n  "punchline": "Because they have bear feet!"\n}'
+      }
+    }
+  }
+*/
+```
+
+```javascript
+const model = new ChatOpenAI();
+const content = 'Is there any errors in the following code? function () {console.log(1);;}';
+const messages = [new HumanMessage({ content: content })];
+chatModel.predictMessages(messages).then(result => {
+});
+```
+
+```javascript
+import { PromptTemplate } from "langchain/prompts";
+import { ChatOpenAI } from "langchain/chat_models/openai";
+import { RunnableSequence } from "langchain/schema/runnable";
+import { StringOutputParser } from "langchain/schema/output_parser";
+
+const model = new ChatOpenAI({});
+const promptTemplate = PromptTemplate.fromTemplate(
+  "Tell me a joke about {topic}"
+);
+const outputParser = new StringOutputParser();
+
+const chain = RunnableSequence.from([promptTemplate, model, outputParser]);
+
+const result = await chain.invoke({ topic: "bears" });
+
+console.log(result);
+
+/*
+  "Why don't bears wear shoes?\n\nBecause they have bear feet!"
+*/
+```
+
+### Cookbook Multiple chains
+`RunnableSequence` can be used to combine multiple Chains together.
+
+The following RunnableSequence coerces the object into a RunnableMap. Each property in the map receives the same parameters.
+The runnable (`chain` in this example) or function (which can get the input as an object in parameter) set as the value 
+of that property is invoked with those parameters, and the return value populates an object which is then passed onto the next runnable in the sequence.
+
+```javascript
+import { PromptTemplate } from "langchain/prompts";
+import { RunnableSequence } from "langchain/schema/runnable";
+import { StringOutputParser } from "langchain/schema/output_parser";
+import { ChatAnthropic } from "langchain/chat_models/anthropic";
+
+const prompt1 = PromptTemplate.fromTemplate(
+  `What is the city {person} is from? Only respond with the name of the city.`
+);
+const prompt2 = PromptTemplate.fromTemplate(
+  `What country is the city {city} in? Respond in {language}.`
+);
+
+const model = new ChatAnthropic({});
+
+const chain = prompt1.pipe(model).pipe(new StringOutputParser());
+
+const combinedChain = RunnableSequence.from([
+  {
+    city: chain,
+    language: (input) => input.language,
+  },
+  prompt2,
+  model,
+  new StringOutputParser(),
+]);
+
+const result = await combinedChain.invoke({
+  person: "Obama",
+  language: "German",
+});
+
+console.log(result);
+
+/*
+  Chicago befindet sich in den Vereinigten Staaten.
+*/
+```
+
+### RAG
+
+```javascript
+import { ChatOpenAI } from "langchain/chat_models/openai";
+import { HNSWLib } from "langchain/vectorstores/hnswlib";
+import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import { PromptTemplate } from "langchain/prompts";
+import {
+  RunnableSequence,
+  RunnablePassthrough,
+} from "langchain/schema/runnable";
+import { StringOutputParser } from "langchain/schema/output_parser";
+import { formatDocumentsAsString } from "langchain/util/document";
+
+const model = new ChatOpenAI({});
+
+// It creates a new Document instance for each text and metadata, then calls the fromDocuments method to create the 
+// HNSWLib instance.
+const vectorStore = await HNSWLib.fromTexts(
+  // texts used to create document
+  ["mitochondria is the powerhouse of the cell"],
+  // metadatas used to create document
+  [{ id: 1 }],
+  // embeddings used by the HNSWLib instance
+  new OpenAIEmbeddings()
+);
+// retriever Can perform similarity search or maximal marginal relevance search.
+const retriever = vectorStore.asRetriever();
+
+const prompt =
+  PromptTemplate.fromTemplate(`Answer the question based only on the following context:
+{context}
+
+Question: {question}`);
+
+const chain = RunnableSequence.from([
+  {
+    context: retriever.pipe(formatDocumentsAsString),
+    // RunnablePassthrough pass the string that invoke received, so that invoke can receive a string rather than object
+    question: new RunnablePassthrough(),
+  },
+  prompt,
+  model,
+  new StringOutputParser(),
+]);
+
+const result = await chain.invoke("What is the powerhouse of the cell?");
+
+console.log(result);
+
+/*
+  "The powerhouse of the cell is the mitochondria."
+*/
+```
+
+#### Conversational Retrieval Chain
+
+```typescript
+import { PromptTemplate } from "langchain/prompts";
+import {
+  RunnableSequence,
+  RunnablePassthrough,
+} from "langchain/schema/runnable";
+import { ChatOpenAI } from "langchain/chat_models/openai";
+import { HNSWLib } from "langchain/vectorstores/hnswlib";
+import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import { StringOutputParser } from "langchain/schema/output_parser";
+import { formatDocumentsAsString } from "langchain/util/document";
+
+const model = new ChatOpenAI({});
+
+const condenseQuestionTemplate = `Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question, in its original language.
+
+Chat History:
+{chat_history}
+Follow Up Input: {question}
+Standalone question:`;
+const CONDENSE_QUESTION_PROMPT = PromptTemplate.fromTemplate(
+  condenseQuestionTemplate
+);
+
+const answerTemplate = `Answer the question based only on the following context:
+{context}
+
+Question: {question}
+`;
+const ANSWER_PROMPT = PromptTemplate.fromTemplate(answerTemplate);
+
+const formatChatHistory = (chatHistory: [string, string][]) => {
+  const formattedDialogueTurns = chatHistory.map(
+    (dialogueTurn) => `Human: ${dialogueTurn[0]}\nAssistant: ${dialogueTurn[1]}`
+  );
+  return formattedDialogueTurns.join("\n");
+};
+
+const vectorStore = await HNSWLib.fromTexts(
+  [
+    "mitochondria is the powerhouse of the cell",
+    "mitochondria is made of lipids",
+  ],
+  [{ id: 1 }, { id: 2 }],
+  new OpenAIEmbeddings()
+);
+const retriever = vectorStore.asRetriever();
+
+type ConversationalRetrievalQAChainInput = {
+  question: string;
+  chat_history: [string, string][];
+};
+
+const standaloneQuestionChain = RunnableSequence.from([
+  {
+    question: (input: ConversationalRetrievalQAChainInput) => input.question,
+    chat_history: (input: ConversationalRetrievalQAChainInput) =>
+      formatChatHistory(input.chat_history),
+  },
+  CONDENSE_QUESTION_PROMPT,
+  model,
+  new StringOutputParser(),
+]);
+
+const answerChain = RunnableSequence.from([
+  {
+    context: retriever.pipe(formatDocumentsAsString),
+    question: new RunnablePassthrough(),
+  },
+  ANSWER_PROMPT,
+  model,
+]);
+
+const conversationalRetrievalQAChain =
+  standaloneQuestionChain.pipe(answerChain);
+
+const result1 = await conversationalRetrievalQAChain.invoke({
+  question: "What is the powerhouse of the cell?",
+  chat_history: [],
+});
+console.log(result1);
+/*
+  AIMessage { content: "The powerhouse of the cell is the mitochondria." }
+*/
+
+const result2 = await conversationalRetrievalQAChain.invoke({
+  question: "What are they made out of?",
+  chat_history: [
+    [
+      "What is the powerhouse of the cell?",
+      "The powerhouse of the cell is the mitochondria.",
+    ],
+  ],
+});
+console.log(result2);
+/*
+  AIMessage { content: "Mitochondria are made out of lipids." }
+*/
+```
+
+
+### querying a SQL DB
+```typescript
+import { DataSource } from "typeorm";
+import { SqlDatabase } from "langchain/sql_db";
+import {
+  RunnablePassthrough,
+  RunnableSequence,
+} from "langchain/schema/runnable";
+import { PromptTemplate } from "langchain/prompts";
+import { StringOutputParser } from "langchain/schema/output_parser";
+import { ChatOpenAI } from "langchain/chat_models/openai";
+
+const datasource = new DataSource({
+  type: "sqlite",
+  database: "Chinook.db",
+});
+
+const db = await SqlDatabase.fromDataSourceParams({
+  appDataSource: datasource,
+});
+
+const prompt =
+  PromptTemplate.fromTemplate(`Based on the table schema below, write a SQL query that would answer the user's question:
+{schema}
+
+Question: {question}
+SQL Query:`);
+
+const model = new ChatOpenAI();
+
+// The `RunnablePassthrough.assign()` is used here to passthrough the input from the `.invoke()`
+// call (in this example it's the question), along with any inputs passed to the `.assign()` method.
+// In this case, we're passing the schema.
+const sqlQueryGeneratorChain = RunnableSequence.from([
+  RunnablePassthrough.assign({
+    schema: async () => db.getTableInfo(),
+  }),
+  prompt,
+  model.bind({ stop: ["\nSQLResult:"] }),
+  new StringOutputParser(),
+]);
+
+const result = await sqlQueryGeneratorChain.invoke({
+  question: "How many employees are there?",
+});
+
+console.log({
+  result,
+});
+
+/*
+  {
+    result: "SELECT COUNT(EmployeeId) AS TotalEmployees FROM Employee"
+  }
+*/
+
+const finalResponsePrompt =
+  PromptTemplate.fromTemplate(`Based on the table schema below, question, sql query, and sql response, write a natural language response:
+{schema}
+
+Question: {question}
+SQL Query: {query}
+SQL Response: {response}`);
+
+const fullChain = RunnableSequence.from([
+  RunnablePassthrough.assign({
+    query: sqlQueryGeneratorChain,
+  }),
+  {
+    schema: async () => db.getTableInfo(),
+    question: (input) => input.question,
+    query: (input) => input.query,
+    response: (input) => db.run(input.query),
+  },
+  finalResponsePrompt,
+  model,
+]);
+
+const finalResponse = await fullChain.invoke({
+  question: "How many employees are there?",
+});
+
+console.log(finalResponse);
+
+/*
+  AIMessage {
+    content: 'There are 8 employees.',
+    additional_kwargs: { function_call: undefined }
+  }
+*/
+```
+
+### Adding memory
+
+```typescript
+import { ChatPromptTemplate, MessagesPlaceholder } from "langchain/prompts";
+import { RunnableSequence } from "langchain/schema/runnable";
+import { ChatAnthropic } from "langchain/chat_models/anthropic";
+import { BufferMemory } from "langchain/memory";
+
+const model = new ChatAnthropic();
+const prompt = ChatPromptTemplate.fromMessages([
+  ["system", "You are a helpful chatbot"],
+  new MessagesPlaceholder("history"),
+  ["human", "{input}"],
+]);
+
+// Default "inputKey", "outputKey", and "memoryKey values would work here
+// but we specify them for clarity.
+const memory = new BufferMemory({
+  returnMessages: true,
+  inputKey: "input",
+  outputKey: "output",
+  memoryKey: "history",
+});
+
+console.log(await memory.loadMemoryVariables({}));
+
+/*
+  { history: [] }
+*/
+
+const chain = RunnableSequence.from([
+  {
+    input: (initialInput) => initialInput.input,
+    memory: () => memory.loadMemoryVariables({}),
+  },
+  {
+    input: (previousOutput) => previousOutput.input,
+    history: (previousOutput) => previousOutput.memory.history,
+  },
+  prompt,
+  model,
+]);
+
+const inputs = {
+  input: "Hey, I'm Bob!",
+};
+
+const response = await chain.invoke(inputs);
+
+console.log(response);
+
+/*
+  AIMessage {
+    content: " Hi Bob, nice to meet you! I'm Claude, an AI assistant created by Anthropic to be helpful, harmless, and honest.",
+    additional_kwargs: {}
+  }
+*/
+
+await memory.saveContext(inputs, {
+  output: response.content,
+});
+
+console.log(await memory.loadMemoryVariables({}));
+
+/*
+  {
+    history: [
+      HumanMessage {
+        content: "Hey, I'm Bob!",
+        additional_kwargs: {}
+      },
+      AIMessage {
+        content: " Hi Bob, nice to meet you! I'm Claude, an AI assistant created by Anthropic to be helpful, harmless, and honest.",
+        additional_kwargs: {}
+      }
+    ]
+  }
+*/
+
+const inputs2 = {
+  input: "What's my name?",
+};
+
+const response2 = await chain.invoke(inputs2);
+
+console.log(response2);
+
+/*
+  AIMessage {
+    content: ' You told me your name is Bob.',
+    additional_kwargs: {}
+  }
+*/
+```
+
+### Using tools
+```typescript
+import { SerpAPI } from "langchain/tools";
+import { ChatAnthropic } from "langchain/chat_models/anthropic";
+import { PromptTemplate } from "langchain/prompts";
+import { StringOutputParser } from "langchain/schema/output_parser";
+
+const search = new SerpAPI();
+
+const prompt =
+  PromptTemplate.fromTemplate(`Turn the following user input into a search query for a search engine:
+
+{input}`);
+
+const model = new ChatAnthropic({});
+
+const chain = prompt.pipe(model).pipe(new StringOutputParser()).pipe(search);
+
+const result = await chain.invoke({
+  input: "Who is the current prime minister of Malaysia?",
+});
+
+console.log(result);
+/*
+  Anwar Ibrahim
+*/
+```
+
+### Agents
+// todo
+https://js.langchain.com/docs/expression_language/cookbook/agents
+
+## Modules
+LangChain provide Prompts, Language Models and Output parsers.
+
+* Prompts: Templatize, dynamically select, and manage model inputs
+* Language models: Make calls to language models through common interfaces
+* Output parsers: Extract information from model outputs
+
+### prompt templates: Parametrize model inputs
+Language models take text as input - that text is commonly referred to as a prompt.
+
+A prompt template can contain:
+* instructions to the language model,
+* a set of few shot examples to help the language model generate a better response,
+* a question to the language model.
+
+A simple prompt template normally generated in sequence: `PromptTemplate.fromTemplate` => `format({argName: argValue})`
+
+### Example selectors: Dynamically select examples to include in prompts
