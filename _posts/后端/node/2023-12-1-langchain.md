@@ -555,6 +555,113 @@ A prompt template can contain:
 * a set of few shot examples to help the language model generate a better response,
 * a question to the language model.
 
-A simple prompt template normally generated in sequence: `PromptTemplate.fromTemplate` => `format({argName: argValue})`
+#### normal prompt template
+create a prompt template:
+
+```typescript
+import { PromptTemplate } from "langchain/prompts";
+
+const oneInputPrompt = new PromptTemplate({
+    inputVariables: ["adjective"],
+    template: "Tell me a {adjective} joke.",
+});
+const prompt = await oneInputPrompt.format({
+    adjective: "funny",
+});
+```
+
+```typescript
+import { PromptTemplate } from "langchain/prompts";
+
+const template = "Tell me a {adjective} joke about {content}.";
+
+const promptTemplate = PromptTemplate.fromTemplate(template);
+console.log(promptTemplate.inputVariables);
+// ['adjective', 'content']
+const prompt = await promptTemplate.format({
+    adjective: "funny",
+    content: "chickens",
+});
+```
+
+#### chat prompt template
+Chat Models take a list of chat messages as input, which is differ from raw string in that every chat message associated
+to a role.
+
+For example, in OpenAI Chat Completion API, a chat message can be associated with an AI, human or system role.
+
+We should use chat related templates provided by LangChain when interacting with chat models. So to create a message 
+template associated with a role, you would use the **corresponding <ROLE>MessagePromptTemplate**.
+
+```typescript
+import {
+  ChatPromptTemplate,
+  PromptTemplate,
+  SystemMessagePromptTemplate,
+  AIMessagePromptTemplate,
+  HumanMessagePromptTemplate,
+} from "langchain/prompts";
+import { AIMessage, HumanMessage, SystemMessage } from "langchain/schema";
+```
+
+##### create
+
+```typescript
+const systemTemplate =
+  "You are a helpful assistant that translates {input_language} to {output_language}.";
+const humanTemplate = "{text}";
+
+const chatPrompt = ChatPromptTemplate.fromMessages([
+  ["system", systemTemplate],
+  ["human", humanTemplate],
+]);
+
+// Format the messages
+const formattedChatPrompt = await chatPrompt.formatMessages({
+  input_language: "English",
+  output_language: "French",
+  text: "I love programming.",
+});
+
+console.log(formattedChatPrompt);
+
+/*
+  [
+    SystemMessage {
+      content: 'You are a helpful assistant that translates English to French.'
+    },
+    HumanMessage {
+      content: 'I love programming.'
+    }
+  ]
+*/
+```
+
+```typescript
+const template =
+  "You are a helpful assistant that translates {input_language} to {output_language}.";
+const systemMessagePrompt = SystemMessagePromptTemplate.fromTemplate(template);
+```
+
+```typescript
+const prompt = new PromptTemplate({
+  template:
+    "You are a helpful assistant that translates {input_language} to {output_language}.",
+  inputVariables: ["input_language", "output_language"],
+});
+const systemMessagePrompt2 = new SystemMessagePromptTemplate({
+  prompt,
+});
+```
+
+with typescript:
+
+```typescript
+const chatPrompt = ChatPromptTemplate.fromMessages<{
+  input_language: string;
+  output_language: string;
+  text: string;
+}>([systemMessagePrompt, humanMessagePrompt]);
+```
 
 ### Example selectors: Dynamically select examples to include in prompts
