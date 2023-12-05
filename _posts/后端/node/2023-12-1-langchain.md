@@ -547,6 +547,7 @@ LangChain provide Prompts, Language Models and Output parsers.
 * Language models: Make calls to language models through common interfaces
 * Output parsers: Extract information from model outputs
 
+## Prompts
 ### prompt templates: Parametrize model inputs
 Language models take text as input - that text is commonly referred to as a prompt.
 
@@ -780,6 +781,11 @@ console.log(formattedPrompt);
 ```
 
 ##### Few Shot vs Chat Few Shot
+Main difference is input and output values.
+
+`FewShotChatMessagePromptTemplate` works by taking in a list of `ChatPromptTemplate` for examples, and its output is a list of instances of `BaseMessage`.
+
+On the other hand, `FewShotPromptTemplate` works by taking in a `PromptTemplate` for examples, and its output is a string.
 
 ```typescript
 import {
@@ -844,4 +850,724 @@ AI: what is Jan Sindel's personal history?
  */
 ```
 
+##### With non chat model
+LangChain also provides a class for few shot prompt formatting for non chat models: `FewShotPromptTemplate`.
+
+###### Partial with function
+
+```typescript
+import {
+  ChatPromptTemplate,
+  FewShotChatMessagePromptTemplate,
+} from "langchain/prompts";
+
+const examplePrompt = PromptTemplate.fromTemplate("{foo}{bar}");
+const prompt = new FewShotPromptTemplate({
+  prefix: "{foo}{bar}",
+  examplePrompt,
+  inputVariables: ["foo", "bar"],
+});
+const partialPrompt = await prompt.partial({
+  foo: () => Promise.resolve("boo"),
+});
+const formatted = await partialPrompt.format({ bar: "baz" });
+console.log(formatted);
+// boobaz\n
+```
+
+###### With Functions and Example Selector
+
+```typescript
+import {
+  ChatPromptTemplate,
+  FewShotChatMessagePromptTemplate,
+} from "langchain/prompts";
+
+const examplePrompt = PromptTemplate.fromTemplate("An example about {x}");
+const exampleSelector = await LengthBasedExampleSelector.fromExamples(
+    [{ x: "foo" }, { x: "bar" }],
+    { examplePrompt, maxLength: 200 }
+);
+const prompt = new FewShotPromptTemplate({
+  prefix: "{foo}{bar}",
+  exampleSelector,
+  examplePrompt,
+  inputVariables: ["foo", "bar"],
+});
+const partialPrompt = await prompt.partial({
+  foo: () => Promise.resolve("boo"),
+});
+const formatted = await partialPrompt.format({ bar: "baz" });
+console.log(formatted);
+// boobaz
+// An example about foo
+// An example about bar
+```
+
+#### Partial prompt template
+For example, you have a prompt using two variable. You get value of one variable early and the other later. Don't need to 
+wait until the later one with `partial`.
+
+```typescript
+import { PromptTemplate } from "langchain/prompts";
+
+const prompt = new PromptTemplate({
+  template: "{foo}{bar}",
+  inputVariables: ["foo", "bar"],
+});
+
+const partialPrompt = await prompt.partial({
+  foo: "foo",
+});
+
+const formattedPrompt = await partialPrompt.format({
+  bar: "baz",
+});
+
+console.log(formattedPrompt);
+
+// foobaz
+```
+
+For partial with function, example is same as [FewShotChatMessagePromptTemplate](#Few-shot-with-Function). `partial` is common function of prompt template.
+
+Or you can initialize the prompt with partialed varible:
+```typescript
+const prompt = new PromptTemplate({
+  template: "{foo}{bar}",
+  inputVariables: ["bar"],
+  partialVariables: {
+    // value can be function which return value
+    foo: "foo",
+  },
+});
+
+const formattedPrompt = await prompt.format({
+  bar: "baz",
+});
+
+console.log(formattedPrompt);
+
+// foobaz
+```
+
+#### Composition
+This part goes over how to compose multiple prompts together with PipelinePrompt.
+
+A PipelinePrompt consists of two main parts:
+- Final prompt: This is the final prompt that is returned
+- Pipeline prompts: This is a list of tuples, consisting of a string name and a prompt template. Each prompt template will
+be formatted and then passed to future prompt templates as a variable with the same name.
+
+```typescript
+import { PromptTemplate, PipelinePromptTemplate } from "langchain/prompts";
+
+const fullPrompt = PromptTemplate.fromTemplate(`{introduction}
+
+{example}
+
+{start}`);
+
+const introductionPrompt = PromptTemplate.fromTemplate(
+  `You are impersonating {person}.`
+);
+
+const examplePrompt =
+  PromptTemplate.fromTemplate(`Here's an example of an interaction:
+Q: {example_q}
+A: {example_a}`);
+
+const startPrompt = PromptTemplate.fromTemplate(`Now, do this for real!
+Q: {input}
+A:`);
+
+const composedPrompt = new PipelinePromptTemplate({
+  pipelinePrompts: [
+    {
+      name: "introduction",
+      prompt: introductionPrompt,
+    },
+    {
+      name: "example",
+      prompt: examplePrompt,
+    },
+    {
+      name: "start",
+      prompt: startPrompt,
+    },
+  ],
+  finalPrompt: fullPrompt,
+});
+
+const formattedPrompt = await composedPrompt.format({
+  person: "Elon Musk",
+  example_q: `What's your favorite car?`,
+  example_a: "Telsa",
+  input: `What's your favorite social media site?`,
+});
+
+console.log(formattedPrompt);
+
+/*
+  You are impersonating Elon Musk.
+
+  Here's an example of an interaction:
+  Q: What's your favorite car?
+  A: Telsa
+
+  Now, do this for real!
+  Q: What's your favorite social media site?
+  A:
+*/
+```
+
 ### Example selectors: Dynamically select examples to include in prompts
+The base interface of the example selector is defined as below:
+
+```typescript
+class BaseExampleSelector {
+  addExample(example: Example): Promise<void | string>;
+
+  selectExamples(input_variables: Example): Promise<Example[]>;
+}
+```
+
+It needs to expose a selectExamples - this takes in the input variables and then returns a list of examples method - and
+an addExample method, which saves an example for later selection. It is up to each specific implementation as to how 
+those examples are saved and selected.
+
+#### Select by length
+This example selector selects which examples to use based on length. This is useful when you are worried about 
+constructing a prompt that will go over the length of the context window.
+
+```typescript
+import {
+  LengthBasedExampleSelector,
+  PromptTemplate,
+  FewShotPromptTemplate,
+} from "langchain/prompts";
+
+export async function run() {
+  // Create a prompt template that will be used to format the examples.
+  const examplePrompt = new PromptTemplate({
+    inputVariables: ["input", "output"],
+    template: "Input: {input}\nOutput: {output}",
+  });
+
+  // Create a LengthBasedExampleSelector that will be used to select the examples.
+  const exampleSelector = await LengthBasedExampleSelector.fromExamples(
+    [
+      { input: "happy", output: "sad" },
+      { input: "tall", output: "short" },
+      { input: "energetic", output: "lethargic" },
+      { input: "sunny", output: "gloomy" },
+      { input: "windy", output: "calm" },
+    ],
+    {
+      examplePrompt,
+      maxLength: 25,
+    }
+  );
+
+  // Create a FewShotPromptTemplate that will use the example selector.
+  const dynamicPrompt = new FewShotPromptTemplate({
+    // We provide an ExampleSelector instead of examples.
+    exampleSelector,
+    examplePrompt,
+    prefix: "Give the antonym of every input",
+    suffix: "Input: {adjective}\nOutput:",
+    inputVariables: ["adjective"],
+  });
+
+  // An example with small input, so it selects all examples.
+  console.log(await dynamicPrompt.format({ adjective: "big" }));
+  /*
+   Give the antonym of every input
+
+   Input: happy
+   Output: sad
+
+   Input: tall
+   Output: short
+
+   Input: energetic
+   Output: lethargic
+
+   Input: sunny
+   Output: gloomy
+
+   Input: windy
+   Output: calm
+
+   Input: big
+   Output:
+   */
+  
+  // TODO why
+  // 如果 maxlength 为 4，显示：
+  // Give the antonym of every input
+  //
+  // Input: big
+  // Output:
+  
+  // 如果 maxlength 为 5，显示：
+  // Give the antonym of every input
+  //
+  // Input: happy
+  // Output: sad
+  //
+  // Input: big
+  // Output:
+
+  // An example with long input, so it selects only one example.
+  const longString =
+    "big and huge and massive and large and gigantic and tall and much much much much much bigger than everything else";
+  console.log(await dynamicPrompt.format({ adjective: longString }));
+  /*
+   Give the antonym of every input
+
+   Input: happy
+   Output: sad
+
+   Input: big and huge and massive and large and gigantic and tall and much much much much much bigger than everything else
+   Output:
+   */
+}
+```
+
+#### Select by similarity
+This object selects examples based on similarity to the inputs.
+
+The fields of the examples object will be used as parameters to format the examplePrompt passed to the 
+FewShotPromptTemplate. Each example should therefore contain **all required fields** for the example prompt you are using.
+
+```typescript
+import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import {
+  SemanticSimilarityExampleSelector,
+  PromptTemplate,
+  FewShotPromptTemplate,
+} from "langchain/prompts";
+import { HNSWLib } from "langchain/vectorstores/hnswlib";
+
+// Create a prompt template that will be used to format the examples.
+const examplePrompt = PromptTemplate.fromTemplate(
+  "Input: {input}\nOutput: {output}"
+);
+
+// Create a SemanticSimilarityExampleSelector that will be used to select the examples.
+const exampleSelector = await SemanticSimilarityExampleSelector.fromExamples(
+  [
+    { input: "happy", output: "sad" },
+    { input: "tall", output: "short" },
+    { input: "energetic", output: "lethargic" },
+    { input: "sunny", output: "gloomy" },
+    { input: "windy", output: "calm" },
+  ],
+  new OpenAIEmbeddings(),
+  HNSWLib,
+  { k: 1 }
+);
+
+// Create a FewShotPromptTemplate that will use the example selector.
+const dynamicPrompt = new FewShotPromptTemplate({
+  // We provide an ExampleSelector instead of examples.
+  exampleSelector,
+  examplePrompt,
+  prefix: "Give the antonym of every input",
+  suffix: "Input: {adjective}\nOutput:",
+  inputVariables: ["adjective"],
+});
+
+// Input is about the weather, so should select eg. the sunny/gloomy example
+console.log(await dynamicPrompt.format({ adjective: "rainy" }));
+/*
+  Give the antonym of every input
+
+  Input: sunny
+  Output: gloomy
+
+  Input: rainy
+  Output:
+*/
+
+// Input is a measurement, so should select the tall/short example
+console.log(await dynamicPrompt.format({ adjective: "large" }));
+/*
+  Give the antonym of every input
+
+  Input: tall
+  Output: short
+
+  Input: large
+  Output:
+*/
+```
+
+### Prompt selectors: programmatically select a prompt
+https://js.langchain.com/docs/modules/model_io/prompts/prompt_selectors/
+
+## Language Model
+LangChain provides interfaces and integrations for two types of models:
+* LLMs: Models that take a text string as input and return a text string
+* Chat models: Models that are backed by a language model but take a list of Chat Messages as input and return a Chat Message
+
+LLMs in LangChain refer to pure text completion models. The APIs they wrap take a string prompt as input and output a 
+string completion. OpenAI's GPT-3 is implemented as an LLM.
+
+Chat models are often backed by LLMs but tuned specifically for having conversations. And, crucially, their provider 
+APIs expose a different interface than pure text completion models. Instead of a single string, they take **a list of 
+chat messages** as input. Usually these messages are **labeled** with the speaker (usually one of "System", "AI", and 
+"Human"). And they return a ("AI") chat message as output. GPT-4 and Anthropic's Claude are both implemented as Chat Models.
+
+To make it possible to swap LLMs and Chat Models, both implement the Base Language Model interface. This exposes common 
+methods "predict", which takes a string and returns a string, and "predict messages", which takes messages and returns a message.
+If you are using a specific model it's recommended you use the methods specific to that model class, but if you're 
+creating an application that should work with different types of models the shared interface can be helpful.
+
+### LLMs
+LangChain does not serve its own LLMs, but rather provides a standard interface for interacting with many different LLMs.
+
+#### Get started
+1. install npm package such as openai
+2. setup api key by command or passing to constructor
+
+#### call
+The simplest way to use an LLM is the `.call` method: pass in a string, get a string completion.
+
+`generate` lets you can call the model with a list of strings, getting back a more complete response than just the text.
+Including things like multiple top responses and other LLM provider-specific information
+
+```typescript
+const llmResult = await llm.generate(
+  ["Tell me a joke", "Tell me a poem"],
+  ["Tell me a joke", "Tell me a poem"]
+);
+
+console.log(llmResult.generations[0]);
+/*
+  [
+    {
+      text: "\n\nQ: What did the fish say when it hit the wall?\nA: Dam!",
+      generationInfo: { finishReason: "stop", logprobs: null }
+    }
+  ]
+*/
+
+console.log(llmResult.llmOutput);
+
+/*
+  {
+    tokenUsage: { completionTokens: 46, promptTokens: 8, totalTokens: 54 }
+  }
+*/
+```
+
+Here's an example with additional parameters, which sets -1 for max_tokens to turn on token size calculations:
+
+```typescript
+import { OpenAI } from "langchain/llms/openai";
+
+export const run = async () => {
+  const model = new OpenAI({
+    // customize openai model that's used, `gpt-3.5-turbo-instruct` is the default
+    modelName: "gpt-3.5-turbo-instruct",
+
+    // `max_tokens` supports a magic -1 param where the max token length for the specified modelName
+    //  is calculated and included in the request to OpenAI as the `max_tokens` param
+    maxTokens: -1,
+
+    // use `modelKwargs` to pass params directly to the openai call
+    // note that they use snake_case instead of camelCase
+    modelKwargs: {
+      user: "me",
+    },
+
+    // for additional logging for debugging purposes
+    verbose: true,
+  });
+
+  const resA = await model.call(
+    "What would be a good company name a company that makes colorful socks?"
+  );
+  console.log({ resA });
+  // { resA: '\n\nSocktastic Colors' }
+};
+```
+
+#### Advanced info
+Both LLMs and Chat Models are built on top of the BaseLanguageModel class. This class provides a common interface for all models, and allows us to easily swap out models in chains without changing the rest of the code.
+LLM和聊天模型都是建立在 BaseLanguageModel 类之上，这个类为所有模型提供了一个公共接口，并允许我们在不更改其余代码的情况下轻松地交换链中的模型。
+
+The BaseLanguageModel class has two abstract methods: generatePrompt and getNumTokens, which are implemented by BaseChatModel and BaseLLM respectively.
+BaseLanguageModel  类有两个抽象方法： generatePrompt  和  getNumTokens ，分别由  BaseChatModel  和  BaseLLM  实现。
+
+BaseLLM is a subclass of BaseLanguageModel that provides a common interface for LLMs while BaseChatModel is a subclass of BaseLanguageModel that provides a common interface for chat models.
+BaseLLM  是  BaseLanguageModel  的子类，为 LLM 提供公共接口，而  BaseChatModel  是  BaseLanguageModel  的子类，为聊天模型提供公共接口。
+
+
+
+
+#### Cancelling requests
+https://js.langchain.com/docs/modules/model_io/models/llms/how_to/cancelling_requests
+
+#### maxRetries: Dealing with API Errors
+https://js.langchain.com/docs/modules/model_io/models/llms/how_to/dealing_with_api_errors
+
+#### maxConcurrency: Dealing with Rate Limits
+https://js.langchain.com/docs/modules/model_io/models/llms/how_to/dealing_with_rate_limits
+
+#### Caching: speed up your application
+https://js.langchain.com/docs/modules/model_io/models/llms/how_to/llm_caching
+
+#### Streaming: processing it as soon as it's available
+https://js.langchain.com/docs/modules/model_io/models/llms/how_to/streaming_llm
+
+#### Subscribing to events
+https://js.langchain.com/docs/modules/model_io/models/llms/how_to/subscribing_events
+
+#### Adding a timeout
+By default, LangChain will wait indefinitely for a response from the model provider.
+
+```typescript
+import { OpenAI } from "langchain/llms/openai";
+
+const model = new OpenAI({ temperature: 1 });
+
+const resA = await model.call(
+  "What would be a good company name a company that makes colorful socks?",
+  { timeout: 1000 } // 1s timeout
+);
+
+console.log({ resA });
+// '\n\nSocktastic Colors' }
+```
+
+### Chat models
+
+#### Messages
+The chat model interface is based around messages rather than raw text. The types of messages currently supported in 
+LangChain are AIMessage, HumanMessage, SystemMessage, FunctionMessage, and ChatMessage -- ChatMessage takes in an 
+arbitrary role parameter. Most of the time, you'll just be dealing with HumanMessage, AIMessage, and SystemMessage
+
+#### call
+You can generate LLM responses by calling `.invoke` and passing in whatever inputs you defined in the `Runnable`.
+
+```typescript
+import { ChatOpenAI } from "langchain/chat_models/openai";
+import { PromptTemplate } from "langchain/prompts";
+
+const chat = new ChatOpenAI({});
+// Create a prompt to start the conversation.
+const prompt =
+  PromptTemplate.fromTemplate(`You're a dog, good luck with the conversation.
+Question: {question}`);
+// Define your runnable by piping the prompt into the chat model.
+const runnable = prompt.pipe(chat);
+// Call .invoke() and pass in the input defined in the prompt template.
+const response = await runnable.invoke({ question: "Who's a good boy??" });
+console.log(response);
+// AIMessage { content: "Woof woof! Thank you for asking! I believe I'm a good boy! I try my best to be a good dog and 
+// make my humans happy. Wagging my tail happily here! How can I make your day better?" }
+```
+
+You can get chat completions by passing one or more messages to the chat model. The response will be a message.
+
+```typescript
+import { ChatOpenAI } from "langchain/chat_models/openai";
+import { HumanMessage } from "langchain/schema";
+
+const chat = new ChatOpenAI({});
+// Pass in a list of messages to `call` to start a conversation. In this simple example, we only pass in one message.
+const response = await chat.call([
+  new HumanMessage(
+    "What is a good name for a company that makes colorful socks?"
+  ),
+]);
+console.log(response);
+// AIMessage { text: '\n\nRainbow Sox Co.' }
+```
+
+```typescript
+const response2 = await chat.call([
+  new SystemMessage(
+    "You are a helpful assistant that translates English to French."
+  ),
+  new HumanMessage("Translate: I love programming."),
+]);
+console.log(response2);
+// AIMessage { text: "J'aime programmer." }
+```
+
+You can generate completions for multiple sets of messages using `generate`. This returns an `LLMResult` with an additional 
+`message` parameter.
+
+```typescript
+const response3 = await chat.generate([
+  [
+    new SystemMessage(
+      "You are a helpful assistant that translates English to French."
+    ),
+    new HumanMessage(
+      "Translate this sentence from English to French. I love programming."
+    ),
+  ],
+  [
+    new SystemMessage(
+      "You are a helpful assistant that translates English to French."
+    ),
+    new HumanMessage(
+      "Translate this sentence from English to French. I love artificial intelligence."
+    ),
+  ],
+]);
+console.log(response3);
+/*
+  {
+    generations: [
+      [
+        {
+          text: "J'aime programmer.",
+          message: AIMessage { text: "J'aime programmer." },
+        }
+      ],
+      [
+        {
+          text: "J'aime l'intelligence artificielle.",
+          message: AIMessage { text: "J'aime l'intelligence artificielle." }
+        }
+      ]
+    ]
+  }
+*/
+```
+
+You can recover things like token usage from this LLMResult:
+
+```typescript
+console.log(response3.llmOutput);
+/*
+  {
+    tokenUsage: { completionTokens: 20, promptTokens: 69, totalTokens: 89 }
+  }
+*/
+```
+
+#### Cancelling requests
+#### maxRetries: Dealing with API Errors
+#### maxConcurrency: Dealing with Rate Limits
+#### Caching: speed up your application
+#### Streaming: processing it as soon as it's available
+#### Subscribing to events
+#### Adding a timeout
+#### LLM Chain
+#### OpenAI function calling
+There are two main ways to apply functions to your OpenAI calls.
+
+The first and most simple is by attaching a function directly to the .invoke({}) method:
+
+```typescript
+/* Define your function schema */
+const extractionFunctionSchema = {...}
+
+/* Instantiate ChatOpenAI class */
+const model = new ChatOpenAI({ modelName: "gpt-4" });
+
+/**
+ * Call the .invoke method on the model, directly passing
+ * the function arguments as call args.
+ */
+const result = await model.invoke([new HumanMessage("What a beautiful day!")], {
+  functions: [extractionFunctionSchema],
+  function_call: { name: "extractor" },
+});
+
+console.log({ result });
+```
+
+The second way is by calling the `.bind({})` method attaches any call arguments passed in to all future calls to the model.
+It is useful when you want to call the same function twice.
+
+```typescript
+/* Define your function schema */
+const extractionFunctionSchema = {...}
+
+/* Instantiate ChatOpenAI class and bind function arguments to the model */
+const model = new ChatOpenAI({ modelName: "gpt-4" }).bind({
+  functions: [extractionFunctionSchema],
+  function_call: { name: "extractor" },
+});
+
+/* Now we can call the model without having to pass the function arguments in again */
+const result = await model.invoke([new HumanMessage("What a beautiful day!")]);
+
+console.log({ result });
+```
+
+Specifying the function_call argument will force the model to return a response using the specified function. This is 
+useful if you have multiple schemas you'd like the model to pick from.
+
+Example:
+```javascript
+import { ChatOpenAI } from "langchain/chat_models/openai";
+import { HumanMessage } from "langchain/schema";
+// Example function schema:
+const extractionFunctionSchema = {
+  name: "extractor",
+  description: "Extracts fields from the input.",
+  parameters: {
+    type: "object",
+    properties: {
+      tone: {
+        type: "string",
+        enum: ["positive", "negative"],
+        description: "The overall tone of the input",
+      },
+      word_count: {
+        type: "number",
+        description: "The number of words in the input",
+      },
+      chat_response: {
+        type: "string",
+        description: "A response to the human's input",
+      },
+    },
+    required: ["tone", "word_count", "chat_response"],
+  },
+};
+
+const model = new ChatOpenAI({
+  modelName: "gpt-4",
+}).bind({
+  functions: [extractionFunctionSchema],
+  function_call: { name: "extractor" },
+});
+
+const result = await model.invoke([new HumanMessage("What a beautiful day!")]);
+
+console.log(result);
+/*
+AIMessage {
+  lc_serializable: true,
+  lc_kwargs: { content: '', additional_kwargs: { function_call: [Object] } },
+  lc_namespace: [ 'langchain', 'schema' ],
+  content: '',
+  name: undefined,
+  additional_kwargs: {
+    function_call: {
+      name: 'extractor',
+      arguments: '{\n' +
+        '  "tone": "positive",\n' +
+        '  "word_count": 4,\n' +
+        `  "chat_response": "I'm glad you're enjoying the day! What makes it so beautiful for you?"\n` +
+        '}'
+    }
+  }
+}
+*/
+```
+
+> [Usage with Zod](https://js.langchain.com/docs/modules/model_io/models/chat/how_to/function_calling#usage-with-zod)
+
+#### Promopts
+
