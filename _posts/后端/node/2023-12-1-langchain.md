@@ -753,4 +753,33 @@ AIMessage {
 }
 ```
 
+##### Few shot with Function
+When you want to pass a variable not along with the other input variables, you can call `partial` function.
+
+```typescript
+const getCurrentDate = () => {
+  return new Date().toISOString();
+};
+
+const prompt = new FewShotChatMessagePromptTemplate({
+  template: "Tell me a {adjective} joke about the day {date}",
+  inputVariables: ["adjective", "date"],
+});
+
+const partialPrompt = await prompt.partial({
+  date: getCurrentDate,
+});
+
+const formattedPrompt = await partialPrompt.format({
+  adjective: "funny",
+});
+
+console.log(formattedPrompt);
+
+// Tell me a funny joke about the day 2023-07-13T00:54:59.287Z
+```
+
+##### Few Shot vs Chat Few Shot
+// TODO and the following
+
 ### Example selectors: Dynamically select examples to include in prompts
