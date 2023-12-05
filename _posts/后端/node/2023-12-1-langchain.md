@@ -664,4 +664,93 @@ const chatPrompt = ChatPromptTemplate.fromMessages<{
 }>([systemMessagePrompt, humanMessagePrompt]);
 ```
 
+#### Few Shot Prompt Templates
+Few shot prompting is a prompting technique which provides the Large Language Model (LLM) with a list of examples, and then asks the LLM to generate some text following the lead of the examples provided.
+
+Say you want your LLM to respond in a **specific format**. You can few shot prompt the LLM with a list of question answer pairs so it knows what format to respond in.
+
+`FewShotChatMessagePromptTemplate` and `ChatPromptTemplate`:
+
+```typescript
+import {
+  ChatPromptTemplate,
+  FewShotChatMessagePromptTemplate,
+} from "langchain/prompts";
+
+const examples = [
+  {
+    input: "Could the members of The Police perform lawful arrests?",
+    output: "what can the members of The Police do?",
+  },
+  {
+    input: "Jan Sindel's was born in what country?",
+    output: "what is Jan Sindel's personal history?",
+  },
+];
+const examplePrompt = ChatPromptTemplate.fromTemplate(`Human: {input}
+AI: {output}`);
+const fewShotPrompt = new FewShotChatMessagePromptTemplate({
+  examplePrompt,
+  examples,
+  inputVariables: [], // no input variables
+});
+const formattedPrompt = await fewShotPrompt.format({});
+console.log(formattedPrompt);
+```
+
+```json
+[
+  HumanMessage {
+    lc_namespace: [ 'langchain', 'schema' ],
+    content: 'Human: Could the members of The Police perform lawful arrests?\n' +
+      'AI: what can the members of The Police do?',
+    additional_kwargs: {}
+  },
+  HumanMessage {
+    lc_namespace: [ 'langchain', 'schema' ],
+    content: "Human: Jan Sindel's was born in what country?\n" +
+      "AI: what is Jan Sindel's personal history?",
+    additional_kwargs: {}
+  }
+]
+```
+
+```typescript
+const model = new ChatOpenAI({});
+const examples = [
+  {
+    input: "Could the members of The Police perform lawful arrests?",
+    output: "what can the members of The Police do?",
+  },
+  {
+    input: "Jan Sindel's was born in what country?",
+    output: "what is Jan Sindel's personal history?",
+  },
+];
+const examplePrompt = ChatPromptTemplate.fromTemplate(`Human: {input}
+AI: {output}`);
+const fewShotPrompt = new FewShotChatMessagePromptTemplate({
+  prefix:
+    "Rephrase the users query to be more general, using the following examples",
+  suffix: "Human: {input}",
+  examplePrompt,
+  examples,
+  inputVariables: ["input"],
+});
+const formattedPrompt = await fewShotPrompt.format({
+  input: "What's France's main city?",
+});
+
+const response = await model.invoke(formattedPrompt);
+console.log(response);
+```
+
+```json
+AIMessage {
+  lc_namespace: [ 'langchain', 'schema' ],
+  content: 'What is the capital of France?',
+  additional_kwargs: { function_call: undefined }
+}
+```
+
 ### Example selectors: Dynamically select examples to include in prompts
