@@ -780,6 +780,68 @@ console.log(formattedPrompt);
 ```
 
 ##### Few Shot vs Chat Few Shot
-// TODO and the following
+
+```typescript
+import {
+  FewShotPromptTemplate,
+  FewShotChatMessagePromptTemplate,
+} from "langchain/prompts";
+
+const examples = [
+  {
+    input: "Could the members of The Police perform lawful arrests?",
+    output: "what can the members of The Police do?",
+  },
+  {
+    input: "Jan Sindel's was born in what country?",
+    output: "what is Jan Sindel's personal history?",
+  },
+];
+const prompt = `Human: {input}
+AI: {output}`;
+const examplePromptTemplate = PromptTemplate.fromTemplate(prompt);
+const exampleChatPromptTemplate = ChatPromptTemplate.fromTemplate(prompt);
+const chatFewShotPrompt = new FewShotChatMessagePromptTemplate({
+  examplePrompt: exampleChatPromptTemplate,
+  examples,
+  inputVariables: [], // no input variables
+});
+const fewShotPrompt = new FewShotPromptTemplate({
+  examplePrompt: examplePromptTemplate,
+  examples,
+  inputVariables: [], // no input variables
+});
+```
+
+```typescript
+console.log("Chat Few Shot: ", await chatFewShotPrompt.formatMessages({}));
+/**
+Chat Few Shot:  [
+  HumanMessage {
+    lc_namespace: [ 'langchain', 'schema' ],
+    content: 'Human: Could the members of The Police perform lawful arrests?\n' +
+      'AI: what can the members of The Police do?',
+    additional_kwargs: {}
+  },
+  HumanMessage {
+    lc_namespace: [ 'langchain', 'schema' ],
+    content: "Human: Jan Sindel's was born in what country?\n" +
+      "AI: what is Jan Sindel's personal history?",
+    additional_kwargs: {}
+  }
+]
+ */
+
+console.log("Few Shot: ", await fewShotPrompt.formatPromptValue({}));
+/**
+Few Shot:
+
+Human: Could the members of The Police perform lawful arrests?
+AI: what can the members of The Police do?
+
+Human: Jan Sindel's was born in what country?
+AI: what is Jan Sindel's personal history?
+ */
+```
 
 ### Example selectors: Dynamically select examples to include in prompts
