@@ -1570,4 +1570,26 @@ AIMessage {
 > [Usage with Zod](https://js.langchain.com/docs/modules/model_io/models/chat/how_to/function_calling#usage-with-zod)
 
 #### Promopts
+https://js.langchain.com/docs/modules/model_io/models/chat/how_to/prompts
 
+
+
+## Output parsers
+Language models just output text. Output parsers are classes that help structure language model responses.
+
+There are two main methods an output parser must implement:
+- "Get format instructions": A method which returns a string containing instructions for how the output of a language model should be formatted.
+- "Parse": A method which takes in a string (assumed to be the response from a language model) and parses it into some structure.
+
+And one optional:
+
+"Parse with prompt": A method which takes in a string (assumed to be the response from a language model) and a prompt 
+(assumed to the prompt that generated such a response) and parses it into some structure. The prompt is largely provided 
+in the event the OutputParser wants to retry or fix the output in some way, and needs information from the prompt to do so.
+
+“Parse with prompt”：一种方法，它接受一个字符串(假定是来自语言模型的响应)和一个提示符(假定是生成此响应的提示符)，并将其解析为某种结构。
+提示符主要在OutputParser想要以某种方式重试或修复输出时提供，并需要从提示符中获取信息来这样做。
+
+### Structured Output Parser
+This output parser can be used when you want to return multiple fields. If you want complex schema returned 
+(i.e. a JSON object with arrays of strings), use the Zod Schema detailed below.
