@@ -1593,3 +1593,179 @@ in the event the OutputParser wants to retry or fix the output in some way, and 
 ### Structured Output Parser
 This output parser can be used when you want to return multiple fields. If you want complex schema returned 
 (i.e. a JSON object with arrays of strings), use the Zod Schema detailed below.
+
+// TODO Model I/O Output parsers
+
+## Retrieval
+Retrieval Augmented Generation (RAG).
+
+Key modules:
+
+Source(data) => Load => Transform => Embed(?) => store => Retrieve
+
+### Document loaders
+LangChain provides many different document loaders to load all types of documents (html, PDF, code) from all types 
+of locations.
+
+Document loaders expose a "`load`" method for loading data as documents from `.txt`, web page and many other source.
+
+#### Creating Document
+A Document is a piece of text and associated metadata. The piece of text is what we interact with the language model, 
+while the optional metadata is useful for keeping track of metadata about the document (such as the source).
+
+```typescript
+import { Document } from "langchain/document";
+
+const doc = new Document({ pageContent: "foo", metadata: { source: "1" } });
+```
+
+#### CSV
+https://js.langchain.com/docs/modules/data_connection/document_loaders/how_to/csv
+
+#### Custom document loaders
+https://js.langchain.com/docs/modules/data_connection/document_loaders/how_to/custom
+
+#### Load file in directory
+https://js.langchain.com/docs/modules/data_connection/document_loaders/how_to/file_directory
+
+#### JSON and PDF
+https://js.langchain.com/docs/modules/data_connection/document_loaders/how_to/json
+https://js.langchain.com/docs/modules/data_connection/document_loaders/how_to/pdf
+
+### Document transformers
+A key part of retrieval is fetching only the relevant parts of documents. One of the primary ones here is splitting 
+(or chunking) a large document into smaller chunks.
+
+#### Split by character
+`RecursiveCharacterTextSplitter`. This will split documents recursively by different characters - starting with `\n\n`, 
+then `\n`, then `" "`.
+
+There are two important parameters chunkSize and chunkOverlap. `chunkSize` controls the max size of the final documents.
+`chunkOverlap` specifies how much overlap there should be between chunks.
+
+```typescript
+const text = `Hi.\n\nI'm Harrison.\n\nHow? Are? You?\nOkay then f f f f.
+This is a weird text to write, but gotta test the splittingggg some how.\n\n
+Bye!\n\n-H.`;
+const splitter = new RecursiveCharacterTextSplitter({
+    chunkSize: 10,
+    chunkOverlap: 1,
+});
+// we can pass docuemnt or text
+const docOutput = await splitter.splitDocuments([
+    new Document({ pageContent: text }),
+]);
+const output = await splitter.createDocuments([text]);
+```
+
+#### Split code and markup
+LangChain supports a variety of different markup and programming language-specific text splitters to split your text.
+
+`SupportedTextSplitterLanguages` is an Array of supported languages.
+
+Using `RecursiveCharacterTextSplitter.fromLanguage` to split text.
+
+example: https://js.langchain.com/docs/modules/data_connection/document_transformers/text_splitters/code_splitter
+
+#### Contextual chunk headers
+在矢量存储中存储大量任意文档，并对其执行问答任务时，简单拆分文档可能无法为 LLM 提供足够上下文来确定是否多个块引用了相同信息或解决不同来源的矛盾信息。
+
+如果知道如何过滤，直接设置好 document 的 metadata 可以解决，但在 vector store 处理前你不一定知道。可以添加 contextual information 
+在 headers 上，有助于处理 vector store 的查询。
+
+```typescript
+import { OpenAI } from "langchain/llms/openai";
+import { RetrievalQAChain, loadQAStuffChain } from "langchain/chains";
+import { CharacterTextSplitter } from "langchain/text_splitter";
+import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import { HNSWLib } from "langchain/vectorstores/hnswlib";
+
+const splitter = new CharacterTextSplitter({
+  chunkSize: 1536,
+  chunkOverlap: 200,
+});
+
+const jimDocs = await splitter.createDocuments(
+  [`My favorite color is blue.`],
+  [],
+  {
+    chunkHeader: `DOCUMENT NAME: Jim Interview\n\n---\n\n`,
+    appendChunkOverlapHeader: true,
+  }
+);
+
+const pamDocs = await splitter.createDocuments(
+  [`My favorite color is red.`],
+  [],
+  {
+    chunkHeader: `DOCUMENT NAME: Pam Interview\n\n---\n\n`,
+    appendChunkOverlapHeader: true,
+  }
+);
+
+const vectorStore = await HNSWLib.fromDocuments(
+  jimDocs.concat(pamDocs),
+  new OpenAIEmbeddings()
+);
+
+const model = new OpenAI({ temperature: 0 });
+
+const chain = new RetrievalQAChain({
+  combineDocumentsChain: loadQAStuffChain(model),
+  retriever: vectorStore.asRetriever(),
+  returnSourceDocuments: true,
+});
+const res = await chain.call({
+  query: "What is Pam's favorite color?",
+});
+
+console.log(JSON.stringify(res, null, 2));
+
+/*
+  {
+    "text": " Red.",
+    "sourceDocuments": [
+      {
+        "pageContent": "DOCUMENT NAME: Pam Interview\n\n---\n\nMy favorite color is red.",
+        "metadata": {
+          "loc": {
+            "lines": {
+              "from": 1,
+              "to": 1
+            }
+          }
+        }
+      },
+      {
+        "pageContent": "DOCUMENT NAME: Jim Interview\n\n---\n\nMy favorite color is blue.",
+        "metadata": {
+          "loc": {
+            "lines": {
+              "from": 1,
+              "to": 1
+            }
+          }
+        }
+      }
+    ]
+  }
+*/
+```
+
+#### Custom text splitters
+https://js.langchain.com/docs/modules/data_connection/document_transformers/text_splitters/custom_text_splitter
+
+
+
+### Text embedding models
+Creating embeddings for documents is a important part. Embeddings capture the semantic meaning of text, allowing you to 
+quickly and efficiently find other pieces of text that are similar.
+
+### Vector stores 矢量存储
+LangChain provides integrations with many different vector stores so that LangChain support efficient storage and 
+searching of these embeddings.
+
+### Retrievers
+Once the data is in the vector store, you still need to retrieve it. LangChain supports many different retrieval algorithms.
+
+
