@@ -1755,17 +1755,219 @@ console.log(JSON.stringify(res, null, 2));
 #### Custom text splitters
 https://js.langchain.com/docs/modules/data_connection/document_transformers/text_splitters/custom_text_splitter
 
+#### Recursively split by character
+https://js.langchain.com/docs/modules/data_connection/document_transformers/text_splitters/recursive_text_splitter
 
+#### TokenTextSplitter
 
 ### Text embedding models
 Creating embeddings for documents is a important part. Embeddings capture the semantic meaning of text, allowing you to 
-quickly and efficiently find other pieces of text that are similar.
+quickly and efficiently find other pieces of text that are similar in vector store.
+
+The Embeddings class is a class designed for interfacing with text embedding models with standard interface.
+The embedding class exposes a `embedQuery` and `embedDocuments` method for queries and documents.
+
+#### maxRetries: Dealing with api error
+
+#### Cache: without recompute
+
+#### Dealing with rate limits
+
+#### timeout
+https://js.langchain.com/docs/modules/data_connection/text_embedding/how_to/timeouts
 
 ### Vector stores 矢量存储
 LangChain provides integrations with many different vector stores so that LangChain support efficient storage and 
 searching of these embeddings.
 
+A vector store takes care of storing embedded data and performing vector search for you.
+
+A key part of working with vector stores is creating the vector to put in them, which is usually created via embeddings.
+
+#### creating index from texts or loader
+Use `fromTexts` or `fromDocuments` to do so, then we can create vector store from index, document or texts.
+
+```typescript
+import { MemoryVectorStore } from "langchain/vectorstores/memory";
+import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+
+const vectorStore = await MemoryVectorStore.fromTexts(
+  ["Hello world", "Bye bye", "hello nice world"],
+  [{ id: 2 }, { id: 1 }, { id: 3 }],
+  new OpenAIEmbeddings()
+);
+
+const resultOne = await vectorStore.similaritySearch("hello world", 1);
+
+// from loader
+import { TextLoader } from "langchain/document_loaders/fs/text";
+
+// Create docs with a loader
+const loader = new TextLoader("src/document_loaders/example_data/example.txt");
+const docs = await loader.load();
+
+// Load the docs into the vector store
+const vectorStore = await MemoryVectorStore.fromDocuments(
+    docs,
+    new OpenAIEmbeddings()
+);
+
+// Search for the most similar document
+const resultOne = await vectorStore.similaritySearch("hello world", 1);
+```
+
+#### which vector store to pick
+https://js.langchain.com/docs/modules/data_connection/vectorstores/#which-one-to-pick
+
 ### Retrievers
 Once the data is in the vector store, you still need to retrieve it. LangChain supports many different retrieval algorithms.
 
+A retriever does not need to be able to store documents, only to return (or retrieve) it.
 
+#### A example showcases question answering over documents.
+Question answering over documents consists of four steps:
+
+1. Create an index
+2. Create a Retriever from that index
+3. Create a question answering chain
+4. Ask questions!
+
+```shell
+npm install -S hnswlib-node
+```
+
+```typescript
+import { HNSWLib } from "langchain/vectorstores/hnswlib";
+import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
+import * as fs from "fs";
+import {
+  RunnablePassthrough,
+  RunnableSequence,
+} from "langchain/schema/runnable";
+import { StringOutputParser } from "langchain/schema/output_parser";
+import {
+  ChatPromptTemplate,
+  HumanMessagePromptTemplate,
+  SystemMessagePromptTemplate,
+} from "langchain/prompts";
+import { ChatOpenAI } from "langchain/chat_models/openai";
+import { formatDocumentsAsString } from "langchain/util/document";
+
+// Initialize the LLM to use to answer the question.
+const model = new ChatOpenAI({});
+const text = fs.readFileSync("state_of_the_union.txt", "utf8");
+const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000 });
+// split it into small document
+const docs = await textSplitter.createDocuments([text]);
+// Create a vector store from the documents.
+// also embeds the documents using the passed OpenAIEmbeddings instance
+const vectorStore = await HNSWLib.fromDocuments(docs, new OpenAIEmbeddings());
+
+// Initialize a retriever wrapper around the vector store
+const vectorStoreRetriever = vectorStore.asRetriever();
+
+// Create a system & human prompt for the chat model
+const SYSTEM_TEMPLATE = `Use the following pieces of context to answer the question at the end.
+If you don't know the answer, just say that you don't know, don't try to make up an answer.
+----------------
+{context}`;
+const messages = [
+  SystemMessagePromptTemplate.fromTemplate(SYSTEM_TEMPLATE),
+  HumanMessagePromptTemplate.fromTemplate("{question}"),
+];
+const prompt = ChatPromptTemplate.fromMessages(messages);
+
+const chain = RunnableSequence.from([
+  {
+    context: vectorStoreRetriever.pipe(formatDocumentsAsString),
+    question: new RunnablePassthrough(),
+  },
+  prompt,
+  model,
+  new StringOutputParser(),
+]);
+
+const answer = await chain.invoke(
+  "What did the president say about Justice Breyer?"
+);
+
+console.log({ answer });
+
+/*
+{
+  answer: 'The president thanked Justice Stephen Breyer for his service and honored him for his dedication to the country.'
+}
+*/
+```
+
+#### Contextual compression
+The information most relevant to a query may be buried in a document with a lot of irrelevant text. Contextual compression is meant to fix this.
+
+https://js.langchain.com/docs/modules/data_connection/retrievers/how_to/contextual_compression
+
+// todo retriever 这部分开始往后
+
+### experimental
+
+## chain
+
+### Conversational Retrieval QA
+https://js.langchain.com/docs/modules/chains/popular/chat_vector_db
+
+```javascript
+const { ChatOpenAI } = require("langchain/chat_models/openai");
+const { PromptTemplate } = require("langchain/prompts");
+const { RunnableSequence } = require("langchain/schema/runnable");
+const { StringOutputParser } = require("langchain/schema/output_parser");
+
+/* Initialize the LLM to use to answer the question */
+const model = new ChatOpenAI();
+const formatChatHistory = (
+  human,
+  ai,
+  previousChatHistory
+) => {
+  const newInteraction = `Human: ${human}\nAI: ${ai}`;
+  if (!previousChatHistory) {
+    return newInteraction;
+  }
+  return `${previousChatHistory}\n\n${newInteraction}`;
+};
+
+const questionPrompt = PromptTemplate.fromTemplate(
+  `你是一个聊天数字人，根据下面的聊天记录来回答对方。
+      ----------------
+      聊天记录: {chatHistory}
+      ----------------
+      问题: {question}
+      ----------------
+      你的回答:`
+);
+
+const chain = RunnableSequence.from([
+  {
+    question: (input) => input.question,
+    chatHistory: (input) => input.chatHistory ?? ""
+  },
+  questionPrompt,
+  model,
+  new StringOutputParser(),
+]);
+
+const questionOne = "你好，我是迈克，我喜欢游泳，你呢？";
+
+chain.invoke({
+  question: questionOne,
+}).then((resultOne) => {
+  console.log({ resultOne });
+
+  chain.invoke({
+    chatHistory: formatChatHistory(questionOne, resultOne),
+    question: "你知道我的爱好是什么吗",
+  }).then((resultTwo) => {
+    console.log({ resultTwo });
+  });
+});
+
+```
