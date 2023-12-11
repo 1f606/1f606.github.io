@@ -1906,68 +1906,584 @@ The information most relevant to a query may be buried in a document with a lot 
 
 https://js.langchain.com/docs/modules/data_connection/retrievers/how_to/contextual_compression
 
-// todo retriever 这部分开始往后
+// todo retriever 这部分开始往后。
+// todo 后面有记的只代表看了那一章
 
 ### experimental
 
 ## chain
 
-### Conversational Retrieval QA
+### Conversational Retrieval QA（会话关键）
 https://js.langchain.com/docs/modules/chains/popular/chat_vector_db
 
 ```javascript
 const { ChatOpenAI } = require("langchain/chat_models/openai");
+const { HNSWLib } = require("langchain/vectorstores/hnswlib");
+const { OpenAIEmbeddings } = require("langchain/embeddings/openai");
+const { RecursiveCharacterTextSplitter } = require("langchain/text_splitter");
+const fs = require("fs");
 const { PromptTemplate } = require("langchain/prompts");
 const { RunnableSequence } = require("langchain/schema/runnable");
 const { StringOutputParser } = require("langchain/schema/output_parser");
+const { formatDocumentsAsString }= require("langchain/util/document");
 
 /* Initialize the LLM to use to answer the question */
-const model = new ChatOpenAI();
-const formatChatHistory = (
-  human,
-  ai,
-  previousChatHistory
-) => {
-  const newInteraction = `Human: ${human}\nAI: ${ai}`;
-  if (!previousChatHistory) {
-    return newInteraction;
-  }
-  return `${previousChatHistory}\n\n${newInteraction}`;
-};
+const model = new ChatOpenAI({
+// todo
+});
+/* Load in the file we want to do question answering over */
+const text = fs.readFileSync('state_of_the_union.txt', 'utf-8');
+/* Split the text into chunks */
+const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000 });
 
-const questionPrompt = PromptTemplate.fromTemplate(
-  `你是一个聊天数字人，根据下面的聊天记录来回答对方。
-      ----------------
-      聊天记录: {chatHistory}
-      ----------------
-      问题: {question}
-      ----------------
-      你的回答:`
-);
+textSplitter.createDocuments([text]).then((docs) => {
+  /* Create the vectorstore */
+  HNSWLib.fromDocuments(docs, new OpenAIEmbeddings({
+    // todo
+  })).then((vectorStore) => {
+    const retriever = vectorStore.asRetriever();
 
-const chain = RunnableSequence.from([
-  {
-    question: (input) => input.question,
-    chatHistory: (input) => input.chatHistory ?? ""
-  },
-  questionPrompt,
-  model,
-  new StringOutputParser(),
-]);
+    const formatChatHistory = (
+      human,
+      ai,
+      previousChatHistory
+    ) => {
+      const newInteraction = `Human: ${human}\nAI: ${ai}`;
+      if (!previousChatHistory) {
+        return newInteraction;
+      }
+      return `${previousChatHistory}\n\n${newInteraction}`;
+    };
 
-const questionOne = "你好，我是迈克，我喜欢游泳，你呢？";
+    const questionPrompt = PromptTemplate.fromTemplate(
+      `Use the following pieces of context to answer the question at the end. If you don't know the answer, just say that you don't know, don't try to make up an answer.
+  ----------------
+  CONTEXT: {context}
+  ----------------
+  CHAT HISTORY: {chatHistory}
+  ----------------
+  QUESTION: {question}
+  ----------------
+  Helpful Answer:`
+    );
 
-chain.invoke({
-  question: questionOne,
-}).then((resultOne) => {
-  console.log({ resultOne });
+    const chain = RunnableSequence.from([
+      {
+        question: (input) => input.question,
+        chatHistory: (input) => input.chatHistory ?? "",
+        context: async (input) => {
+          const relevantDocs = await retriever.getRelevantDocuments(input.question);
+          return formatDocumentsAsString(relevantDocs);
+        },
+      },
+      questionPrompt,
+      model,
+      new StringOutputParser(),
+    ]);
 
-  chain.invoke({
-    chatHistory: formatChatHistory(questionOne, resultOne),
-    question: "你知道我的爱好是什么吗",
-  }).then((resultTwo) => {
-    console.log({ resultTwo });
+    const questionOne = "What did the president say about Justice Breyer?";
+
+    chain.invoke({
+      question: questionOne,
+    }).then((resultOne) => {
+      console.log({ resultOne });
+
+      chain.invoke({
+        chatHistory: formatChatHistory(resultOne, questionOne),
+        question: "was it nice?",
+      }).then((resultTwo) => {
+        console.log({ resultTwo });
+      });
+    });
   });
 });
+```
+
+### SQL（会话关键）
+https://js.langchain.com/docs/modules/chains/popular/sqlite
+
+## Memory
+Chains and Agents are stateless, meaning that they treat each incoming query independently. In some applications, like 
+chatbots, it is essential to remember previous interactions, both in the short and long-term. The Memory class does exactly that.
+
+### ChatMessageHistory, ChatHistory
+`ChatMessageHistory` is a core memory module,  which exposes convenience methods for saving Human messages, AI messages, and then fetching them all.
+
+> Do not share the same history or memory instance between two different chains, a memory instance represents the history of a single conversation
+
+```javascript
+import { ChatMessageHistory } from "langchain/memory";
+
+const history = new ChatMessageHistory();
+
+await history.addUserMessage("Hi!");
+
+await history.addAIChatMessage("What's up?");
+
+const messages = await history.getMessages();
+
+console.log(messages);
+
+/*
+  [
+    HumanMessage {
+      content: 'Hi!',
+    },
+    AIMessage {
+      content: "What's up?",
+    }
+  ]
+*/
+```
+
+```javascript
+import { BufferMemory, ChatMessageHistory } from "langchain/memory";
+import { HumanChatMessage, AIChatMessage } from "langchain/schema";
+
+const pastMessages = [
+  new HumanMessage("My name's Jonas"),
+  new AIMessage("Nice to meet you, Jonas!"),
+];
+
+const memory = new BufferMemory({
+  chatHistory: new ChatMessageHistory(pastMessages),
+});
+```
+
+### BufferMemory
+`BufferMemory`, a wrapper around `ChatMessageHistory` that extracts the messages into an input variable.
+
+This memory allows for storing of messages, then later formats the messages into a prompt input variable.
+
+```javascript
+const { ChatOpenAI } = require("langchain/chat_models/openai");
+const { BufferMemory } = require("langchain/memory");
+const { ConversationChain } = require("langchain/chains");
+
+const model = new ChatOpenAI({
+// todo
+})
+const memory = new BufferMemory();
+// This chain is preconfigured with a default prompt
+const chain = new ConversationChain({ llm: model, memory: memory });
+
+chain.call({ input: "Hi! I'm Jim." })
+  .then((res1) => {
+    console.log({ res1 });
+    chain.call({ input: "What's my name?" }).then(res2 => {
+      console.log({res2});
+    });
+  });
 
 ```
+
+### Creating your own memory class
+https://js.langchain.com/docs/modules/memory/#creating-your-own-memory-class
+
+### Using Buffer Memory with Chat Models
+https://js.langchain.com/docs/modules/memory/how_to/buffer_memory_chat
+
+### BufferWindowMemory
+`BufferWindowMemory` save last `k` interaction with chat models. so the buffer does not get too large.
+
+```javascript
+const { ChatOpenAI } = require("langchain/chat_models/openai");
+const { BufferWindowMemory } = require("langchain/memory");
+const { ConversationChain } = require("langchain/chains");
+
+const model = new ChatOpenAI({
+});
+// check the difference of result when k is 1 and 2
+const memory = new BufferWindowMemory({ k: 2 });
+const chain = new ConversationChain({ llm: model, memory: memory });
+
+chain.call({ input: "Hi! I'm Jim." })
+  .then((res1) => {
+    console.log({ res1 });
+
+    // Call the chain again after the first call
+    return chain.call({ input: "What's my name?" });
+  })
+  .then((res2) => {
+    console.log({ res2 });
+    return chain.call({ input: "What can you do?" });
+  })
+  .then((res2) => {
+    console.log({ res2 });
+    return chain.call({ input: "What's my name?" });
+  })
+  .then((res2) => {
+    console.log({ res2 });
+  })
+  .catch((error) => {
+    console.error("Error:", error);
+  });
+```
+
+### Entity memory
+Entity Memory remembers given facts about specific entities in a conversation. It extracts information on entities 
+(using an LLM) and builds up its knowledge about that entity over time (also using an LLM).
+
+```javascript
+import { OpenAI } from "langchain/llms/openai";
+import {
+  EntityMemory,
+  ENTITY_MEMORY_CONVERSATION_TEMPLATE,
+} from "langchain/memory";
+import { LLMChain } from "langchain/chains";
+
+export const run = async () => {
+  const memory = new EntityMemory({
+    llm: new OpenAI({ temperature: 0 }),
+    chatHistoryKey: "history", // Default value
+    entitiesKey: "entities", // Default value
+  });
+  const model = new OpenAI({ temperature: 0.9 });
+  const chain = new LLMChain({
+    llm: model,
+    prompt: ENTITY_MEMORY_CONVERSATION_TEMPLATE, // Default prompt - must include the set chatHistoryKey and entitiesKey as input variables.
+    memory,
+  });
+
+  const res1 = await chain.call({ input: "Hi! I'm Jim." });
+  console.log({
+    res1,
+    memory: await memory.loadMemoryVariables({ input: "Who is Jim?" }),
+  });
+
+  const res2 = await chain.call({
+    input: "I work in construction. What about you?",
+  });
+  console.log({
+    res2,
+    memory: await memory.loadMemoryVariables({ input: "Who is Jim?" }),
+  });
+};
+```
+
+### How to use multiple memory classes in the same chain
+
+### Conversation summary memory
+`ConversationSummaryMemory`. This type of memory creates a summary of the conversation over time. This memory is most 
+useful for longer conversations, where keeping the past message history in the prompt verbatim would take up too many tokens.
+
+with llm:
+```javascript
+import { OpenAI } from "langchain/llms/openai";
+import { ConversationSummaryMemory } from "langchain/memory";
+import { LLMChain } from "langchain/chains";
+import { PromptTemplate } from "langchain/prompts";
+
+export const run = async () => {
+  const memory = new ConversationSummaryMemory({
+    memoryKey: "chat_history",
+    llm: new OpenAI({ modelName: "gpt-3.5-turbo", temperature: 0 }),
+  });
+
+  const model = new OpenAI({ temperature: 0.9 });
+  const prompt =
+    PromptTemplate.fromTemplate(`The following is a friendly conversation between a human and an AI. The AI is talkative and provides lots of specific details from its context. If the AI does not know the answer to a question, it truthfully says it does not know.
+
+  Current conversation:
+  {chat_history}
+  Human: {input}
+  AI:`);
+  const chain = new LLMChain({ llm: model, prompt, memory });
+
+  const res1 = await chain.call({ input: "Hi! I'm Jim." });
+  console.log({ res1, memory: await memory.loadMemoryVariables({}) });
+  /*
+  {
+    res1: {
+      text: " Hi Jim, I'm AI! It's nice to meet you. I'm an AI programmed to provide information about the environment around me. Do you have any specific questions about the area that I can answer for you?"
+    },
+    memory: {
+      chat_history: 'Jim introduces himself to the AI and the AI responds, introducing itself as a program designed to provide information about the environment. The AI offers to answer any specific questions Jim may have about the area.'
+    }
+  }
+  */
+
+  const res2 = await chain.call({ input: "What's my name?" });
+  console.log({ res2, memory: await memory.loadMemoryVariables({}) });
+  /*
+  {
+    res2: { text: ' You told me your name is Jim.' },
+    memory: {
+      chat_history: 'Jim introduces himself to the AI and the AI responds, introducing itself as a program designed to provide information about the environment. The AI offers to answer any specific questions Jim may have about the area. Jim asks the AI what his name is, and the AI responds that Jim had previously told it his name.'
+    }
+  }
+  */
+};
+```
+
+with chat models:
+```javascript
+import { ChatOpenAI } from "langchain/chat_models/openai";
+import { ConversationSummaryMemory } from "langchain/memory";
+import { LLMChain } from "langchain/chains";
+import { PromptTemplate } from "langchain/prompts";
+
+export const run = async () => {
+  const memory = new ConversationSummaryMemory({
+    memoryKey: "chat_history",
+    llm: new ChatOpenAI({ modelName: "gpt-3.5-turbo", temperature: 0 }),
+  });
+
+  const model = new ChatOpenAI();
+  const prompt =
+    PromptTemplate.fromTemplate(`The following is a friendly conversation between a human and an AI. The AI is talkative and provides lots of specific details from its context. If the AI does not know the answer to a question, it truthfully says it does not know.
+
+  Current conversation:
+  {chat_history}
+  Human: {input}
+  AI:`);
+  const chain = new LLMChain({ llm: model, prompt, memory });
+
+  const res1 = await chain.call({ input: "Hi! I'm Jim." });
+  console.log({ res1, memory: await memory.loadMemoryVariables({}) });
+  /*
+  {
+    res1: {
+      text: "Hello Jim! It's nice to meet you. My name is AI. How may I assist you today?"
+    },
+    memory: {
+      chat_history: 'Jim introduces himself to the AI and the AI greets him and offers assistance.'
+    }
+  }
+  */
+
+  const res2 = await chain.call({ input: "What's my name?" });
+  console.log({ res2, memory: await memory.loadMemoryVariables({}) });
+  /*
+  {
+    res2: {
+      text: "Your name is Jim. It's nice to meet you, Jim. How can I assist you today?"
+    },
+    memory: {
+      chat_history: 'Jim introduces himself to the AI and the AI greets him and offers assistance. The AI addresses Jim by name and asks how it can assist him.'
+    }
+  }
+  */
+};
+```
+
+### ConversationSummaryBufferMemory（会话关键）
+`ConversationSummaryBufferMemory` combines the ideas behind `BufferMemory` and `ConversationSummaryMemory`. It keeps 
+recent interactions in memory and summarize older interactions into summary.  It uses token length rather than number 
+of interactions to determine when to flush interactions.
+
+```javascript
+import { OpenAI } from "langchain/llms/openai";
+import { ChatOpenAI } from "langchain/chat_models/openai";
+import { ConversationSummaryBufferMemory } from "langchain/memory";
+import { ConversationChain } from "langchain/chains";
+import {
+  ChatPromptTemplate,
+  HumanMessagePromptTemplate,
+  MessagesPlaceholder,
+  SystemMessagePromptTemplate,
+} from "langchain/prompts";
+
+// summary buffer memory
+const memory = new ConversationSummaryBufferMemory({
+  llm: new OpenAI({ modelName: "gpt-3.5-turbo-instruct", temperature: 0 }),
+  maxTokenLimit: 10,
+});
+
+await memory.saveContext({ input: "hi" }, { output: "whats up" });
+await memory.saveContext({ input: "not much you" }, { output: "not much" });
+const history = await memory.loadMemoryVariables({});
+console.log({ history });
+/*
+  {
+    history: {
+      history: 'System: \n' +
+        'The human greets the AI, to which the AI responds.\n' +
+        'Human: not much you\n' +
+        'AI: not much'
+    }
+  }
+*/
+
+// We can also get the history as a list of messages (this is useful if you are using this with a chat prompt).
+const chatPromptMemory = new ConversationSummaryBufferMemory({
+  llm: new ChatOpenAI({ modelName: "gpt-3.5-turbo", temperature: 0 }),
+  maxTokenLimit: 10,
+  returnMessages: true,
+});
+await chatPromptMemory.saveContext({ input: "hi" }, { output: "whats up" });
+await chatPromptMemory.saveContext(
+  { input: "not much you" },
+  { output: "not much" }
+);
+
+// We can also utilize the predict_new_summary method directly.
+const messages = await chatPromptMemory.chatHistory.getMessages();
+const previous_summary = "";
+const predictSummary = await chatPromptMemory.predictNewSummary(
+  messages,
+  previous_summary
+);
+console.log(JSON.stringify(predictSummary));
+
+// Using in a chain
+// Let's walk through an example, again setting verbose to true so we can see the prompt.
+const chatPrompt = ChatPromptTemplate.fromMessages([
+  SystemMessagePromptTemplate.fromTemplate(
+    "The following is a friendly conversation between a human and an AI. The AI is talkative and provides lots of specific details from its context. If the AI does not know the answer to a question, it truthfully says it does not know."
+  ),
+  new MessagesPlaceholder("history"),
+  HumanMessagePromptTemplate.fromTemplate("{input}"),
+]);
+
+const model = new ChatOpenAI({ temperature: 0.9, verbose: true });
+const chain = new ConversationChain({
+  llm: model,
+  memory: chatPromptMemory,
+  prompt: chatPrompt,
+});
+
+const res1 = await chain.predict({ input: "Hi, what's up?" });
+console.log({ res1 });
+/*
+  {
+    res1: 'Hello! I am an AI language model, always ready to have a conversation. How can I assist you today?'
+  }
+*/
+
+const res2 = await chain.predict({
+  input: "Just working on writing some documentation!",
+});
+console.log({ res2 });
+/*
+  {
+    res2: "That sounds productive! Documentation is an important aspect of many projects. Is there anything specific you need assistance with regarding your documentation? I'm here to help!"
+  }
+*/
+
+const res3 = await chain.predict({
+  input: "For LangChain! Have you heard of it?",
+});
+console.log({ res3 });
+/*
+  {
+    res3: 'Yes, I am familiar with LangChain! It is a blockchain-based language learning platform that aims to connect language learners with native speakers for real-time practice and feedback. It utilizes smart contracts to facilitate secure transactions and incentivize participation. Users can earn tokens by providing language learning services or consuming them for language lessons.'
+  }
+*/
+
+const res4 = await chain.predict({
+  input:
+    "That's not the right one, although a lot of people confuse it for that!",
+});
+console.log({ res4 });
+
+/*
+  {
+    res4: "I apologize for the confusion! Could you please provide some more information about the LangChain you're referring to? That way, I can better understand and assist you with writing documentation for it."
+  }
+*/
+```
+
+### Vector store-backed memory
+`VectorStoreRetrieverMemory` stores memories in a VectorDB and queries the top-K most "salient" docs every time it is called.
+
+This differs from most of the other Memory classes in that it doesn't explicitly track the order of interactions.
+
+In this case, the "docs" are previous conversation snippets. This can be useful to refer to relevant pieces of 
+information that the AI was told earlier in the conversation.
+
+// TODO 如果只是忽略顺序，好像没啥区别？
+
+```javascript
+import { OpenAI } from "langchain/llms/openai";
+import { VectorStoreRetrieverMemory } from "langchain/memory";
+import { LLMChain } from "langchain/chains";
+import { PromptTemplate } from "langchain/prompts";
+import { MemoryVectorStore } from "langchain/vectorstores/memory";
+import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+
+const vectorStore = new MemoryVectorStore(new OpenAIEmbeddings());
+const memory = new VectorStoreRetrieverMemory({
+  // 1 is how many documents to return, you might want to return more, eg. 4
+  vectorStoreRetriever: vectorStore.asRetriever(1),
+  memoryKey: "history",
+});
+
+// First let's save some information to memory, as it would happen when
+// used inside a chain.
+await memory.saveContext(
+  { input: "My favorite food is pizza" },
+  { output: "thats good to know" }
+);
+await memory.saveContext(
+  { input: "My favorite sport is soccer" },
+  { output: "..." }
+);
+await memory.saveContext({ input: "I don't the Celtics" }, { output: "ok" });
+
+// Now let's use the memory to retrieve the information we saved.
+console.log(
+  await memory.loadMemoryVariables({ prompt: "what sport should i watch?" })
+);
+/*
+{ history: 'input: My favorite sport is soccer\noutput: ...' }
+*/
+
+// Now let's use it in a chain.
+const model = new OpenAI({ temperature: 0.9 });
+const prompt =
+  PromptTemplate.fromTemplate(`The following is a friendly conversation between a human and an AI. The AI is talkative and provides lots of specific details from its context. If the AI does not know the answer to a question, it truthfully says it does not know.
+
+Relevant pieces of previous conversation:
+{history}
+
+(You do not need to use these pieces of information if not relevant)
+
+Current conversation:
+Human: {input}
+AI:`);
+const chain = new LLMChain({ llm: model, prompt, memory });
+
+const res1 = await chain.call({ input: "Hi, my name is Perry, what's up?" });
+console.log({ res1 });
+/*
+{
+  res1: {
+    text: " Hi Perry, I'm doing great! I'm currently exploring different topics related to artificial intelligence like natural language processing and machine learning. What about you? What have you been up to lately?"
+  }
+}
+*/
+
+const res2 = await chain.call({ input: "what's my favorite sport?" });
+console.log({ res2 });
+/*
+{ res2: { text: ' You said your favorite sport is soccer.' } }
+*/
+
+const res3 = await chain.call({ input: "what's my name?" });
+console.log({ res3 });
+/*
+{ res3: { text: ' Your name is Perry.' } }
+*/
+```
+
+## Agents
+
+### Conversational（会话关键）
+https://js.langchain.com/docs/modules/agents/agent_types/chat_conversation_agent
+
+### SQL Agent Toolkit（会话关键）
+Chains are a sequence of predetermined steps, so they are good to get started with as they give you more control. While 
+agent is more complex and powerful, which allows you to use them on larger databases and more complex schemas.
+
+https://js.langchain.com/docs/integrations/toolkits/sql
+
+## Callbacks
+
+## Experimental
+
+## QA and Chat over Documents（会话关键）
+https://js.langchain.com/docs/use_cases/question_answering/
+
+Azure Blob Storage Container
+https://js.langchain.com/docs/integrations/document_loaders/web_loaders/azure_blob_storage_container
