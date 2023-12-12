@@ -2483,7 +2483,126 @@ https://js.langchain.com/docs/integrations/toolkits/sql
 ## Experimental
 
 ## QA and Chat over Documents（会话关键）
-https://js.langchain.com/docs/use_cases/question_answering/
+Steps to make chat app:
+1. Get document from loader. [langchain supported loader](https://js.langchain.com/docs/integrations/document_loaders/)
+2. break document into small pieces by splitter
+3. Storage(often vector store) house and embed the splits
+4. Retrieval: The app retrieves splits from storage (e.g., often with similar embeddings to the input question)
+5. output
+
+```javascript
+import { CheerioWebBaseLoader } from "langchain/document_loaders/web/cheerio";
+import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
+import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import { MemoryVectorStore } from "langchain/vectorstores/memory";
+import { RetrievalQAChain } from "langchain/chains";
+import { ChatOpenAI } from "langchain/chat_models/openai";
+
+// load documents
+const loader = new CheerioWebBaseLoader(
+  "https://lilianweng.github.io/posts/2023-06-23-agent/"
+);
+const data = await loader.load();
+
+// split into chunks
+const textSplitter = new RecursiveCharacterTextSplitter({
+  chunkSize: 500,
+  chunkOverlap: 0,
+});
+
+const splitDocs = await textSplitter.splitDocuments(data);
+
+// embed and store the splits
+const embeddings = new OpenAIEmbeddings();
+
+const vectorStore = await MemoryVectorStore.fromDocuments(
+  splitDocs,
+  embeddings
+);
+
+// retrieve for any question using similarity_search.
+const relevantDocs = await vectorStore.similaritySearch(
+  "What is task decomposition?"
+);
+
+console.log(relevantDocs.length);
+
+// Distill the retrieved documents into an answer
+const model = new ChatOpenAI({ modelName: "gpt-3.5-turbo" });
+
+const template = `Use the following pieces of context to answer the question at the end.
+If you don't know the answer, just say that you don't know, don't try to make up an answer.
+Use three sentences maximum and keep the answer as concise as possible.
+Always say "thanks for asking!" at the end of the answer.
+{context}
+Question: {question}
+Helpful Answer:`;
+
+// the third arguments is optional
+const chain = RetrievalQAChain.fromLLM(model, vectorStore.asRetriever(), {
+  prompt: PromptTemplate.fromTemplate(template),
+  // get all retrieved documents used for answer distillation
+  returnSourceDocuments: true,
+});
+
+const response = await chain.call({
+  query: "What is task decomposition?",
+});
+console.log(response);
+
+// all retrieved documents
+console.log(response.sourceDocuments[0]);
+```
+
+Retrieved documents can be fed to an LLM for answer distillation in a few different ways.
+
+`stuff`, `refine`, and `map-reduce` chains for passing documents to an LLM prompt are well summarized [here](https://js.langchain.com/docs/modules/chains/document/).
+
+`stuff` is commonly used because it simply "stuffs" all retrieved documents into the prompt.
+
+The `loadQAChain` methods are easy ways to pass documents to an LLM using these various approaches.
+
+```javascript
+import { loadQAStuffChain } from "langchain/chains";
+
+// Distill the retrieved documents into an answer using loadQAChain
+const stuffChain = loadQAStuffChain(model);
+
+const stuffResult = await stuffChain.call({
+  input_documents: relevantDocs,
+  question: "What is task decomposition?",
+});
+```
+
+To keep chat history, we use a variant of the previous chain called a `ConversationalRetrievalQAChain`.
+
+First, specify a `Memory buffer` to track the conversation inputs / outputs.
+
+```javascript
+import { ConversationalRetrievalQAChain } from "langchain/chains";
+import { BufferMemory } from "langchain/memory";
+import { ChatOpenAI } from "langchain/chat_models/openai";
+
+const memory = new BufferMemory({
+  memoryKey: "chat_history",
+  returnMessages: true,
+});
+
+const model = new ChatOpenAI({ modelName: "gpt-3.5-turbo" });
+const chain = ConversationalRetrievalQAChain.fromLLM(
+  model,
+  vectorStore.asRetriever(),
+  {
+    memory,
+  }
+);
+
+const result = await chain.call({
+  question: "What are some of the main ideas in self-reflection?",
+});
+console.log(result);
+
+```
 
 Azure Blob Storage Container
 https://js.langchain.com/docs/integrations/document_loaders/web_loaders/azure_blob_storage_container
