@@ -2325,6 +2325,8 @@ const predictSummary = await chatPromptMemory.predictNewSummary(
   previous_summary
 );
 console.log(JSON.stringify(predictSummary));
+// 可以修改 buffer 属性来实现初始化聊天记录
+// chatPromptMemory.buffer = "predictSummary"
 
 // Using in a chain
 // Let's walk through an example, again setting verbose to true so we can see the prompt.
