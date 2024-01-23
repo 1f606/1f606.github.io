@@ -644,6 +644,11 @@ foo.bar = 123;
 foo.bas = 'hello';
 ```
 
+例如一个根据传入对象类型返回其 key 的方法，如果调用时传入的对象类型是省略过部分字段的 `Partial<Omit<Admin, 'type'>>` ，需要用 `as`。
+```typescript
+const getObjectKeys = <T>(obj: T) => Object.keys(obj) as (keyof T)[];
+```
+
 ## Non-null Assertion Operator (Postfix`!`)
 TypeScript has a special syntax for removing null and undefined from a type without doing any explicit checking.
 Writing `!` after any expression is effectively a type assertion that the value isn’t null or undefined:
