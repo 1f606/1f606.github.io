@@ -265,6 +265,21 @@ type Point = {
 };
 ```
 
+Type can be used with generic so that it can accept parameters.
+
+```typescript
+type MyGenericFunction<T> = (input: T) => void;
+
+type Pair<T, U> = {
+  first: T;
+  second: U;
+};
+const stringNumberPair: Pair<string, number> = {
+  first: "hello",
+  second: 42,
+};
+```
+
 ## 交叉类型
 交叉类型是将多个类型合并为一个类型，这让我们可以把现有的多种类型叠加到一起成为一种类型。使用&定义交叉类型。
 
