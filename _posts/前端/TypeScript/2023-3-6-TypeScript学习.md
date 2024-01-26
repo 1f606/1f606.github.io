@@ -1207,6 +1207,22 @@ function fn<T extends object, K extends keyof T>(obj: T, key: K): T[K] {
 
 此时这个函数调用时访问不存在的属性也会报错。
 
+#### is
+通过判断某个类型特有的属性是否等于指定值，来判断某个变量是否当前类型要用 is。
+
+```typescript
+interface User {
+    type: 'user';
+}
+interface Admin {
+    type: 'Admin';
+}
+export type Person = User | Admin;
+export function isUser(person: Person): person is User {
+    return person.type === 'user';
+}
+```
+
 #### in
 in 用来获取联合类型，主要用于数组或对象的构建。不要用在 interface，会报错，用在 type 上。
 
