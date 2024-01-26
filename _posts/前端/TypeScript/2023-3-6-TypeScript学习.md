@@ -1210,6 +1210,14 @@ function fn<T extends object, K extends keyof T>(obj: T, key: K): T[K] {
 #### in
 in 用来获取联合类型，主要用于数组或对象的构建。不要用在 interface，会报错，用在 type 上。
 
+在读取类型上可能不存在的属性时，要先用 `in` 判断该属性是否存在。 
+
+```typescript
+if ('role' in person) {
+  additionalInformation = person.role;
+}
+```
+
 ```typescript
 type Keys = 'x' | 'y' | 'z';
 
