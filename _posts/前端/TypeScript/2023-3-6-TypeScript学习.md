@@ -915,7 +915,7 @@ const trump: Person = {
 `declare` is used to describe the API the library that is not written in Typescript expose.
 
 First, create a file ends with `.d.ts`. Then use the `module` keyword and quoted name of this module which will be use 
-in later import.
+in later import. Don't write logic in in `.d.ts` file because it already exists in `.js` module.
 
 a example of the API that nodejs expose.
 
