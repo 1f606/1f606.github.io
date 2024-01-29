@@ -1620,5 +1620,26 @@ const xdd: Person = {
 }
 ```
 
+## declaration merging
+“declaration merging” means that the compiler merges two separate declarations declared with the same name into a single definition.
+
+### interface
+Typescript merges all member of both interfaces into a single interface with a same name.
+
+rule:
+- Non-function members must be unique. If not, they should be same type otherwise an error will occur.
+- function members will same name threated as overload of function.
+  - later overload order first. One exception to this rule is specialized signatures. If a signature has a parameter whose type is a single string literal type (e.g. not a union of string literals), then it will be bubbled toward the top of its merged overload list.
+  - order priority in merged interface: later interface > former interface; later signature > former signature; signure > normal function.
+
+### namespace
+
+rule:
+- Similarly to interfaces, same name type definition members will be merged.
+- To merge the namespace value, adding the exported members of the second namespace to the first. Non-exported members are only visible in the original (un-merged) namespace.
+
+// todo
+https://www.typescriptlang.org/docs/handbook/declaration-merging.html#merging-namespaces-with-classes-functions-and-enums
+
 ## 资料
 https://www.typescriptlang.org
