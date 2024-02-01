@@ -63,5 +63,22 @@ when you install myapp, it'll create a symlink from the cli.js script to /usr/lo
 
 另外是可执行文件的顶部必须是 `#!/usr/bin/env node`，否则文件里 node 执行不了。
 
+## script
+在npm中使用script标签来定义脚本，每当制定npm run的时候，就会自动创建一个shell脚本，这里需要注意的是，npm run新建的这个 Shell，会将本地目录的node_modules/.bin子目录加入PATH变量。
+
+当前目录的node_modules/.bin子目录里面的所有脚本，都可以直接用脚本名调用，而不必加上路径。比如，当前项目的依赖里面有 esbuild，只要直接写esbuild xxx 就可以了。
+
+## type
+type字段声明npm包遵循的模块化规范。默认值是commonjs。
+
+## main & module & browser
+package.json中还有main,module和browser 3个字段来定义npm包的入口文件。
+
+main : 定义了 npm 包的入口文件，browser 环境和 node 环境均可使用
+module : 定义 npm 包的 ESM 规范的入口文件，browser 环境和 node - 环境均可使用
+browser : 定义 npm 包在 browser 环境下的入口文件
+
+模块的加载循序为：_browser+mjs > module > browser+cjs > main_这个加载顺序是大部分构建工具默认的加载顺序。
+
 ## 资料
 [1] https://docs.npmjs.com/cli/v6/configuring-npm/package-json/#files
