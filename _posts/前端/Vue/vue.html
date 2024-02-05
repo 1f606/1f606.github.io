@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+<script>
+  // util
+  function isValidArrayIndex(index) {
+    return parseInt(index) === index;
+  }
+  function remove(arr, item) {
+    if (arr.length) {
+      const index = arr.indexOf(item);
+      if (index > -1) {
+        return arr.splice(index, 1);
+      }
+    }
+  }
+  function isObject(obj) {
+    return obj !== null && typeof obj === "object";
+  }
+  function def(obj, key, val, enumerable) {
+    Object.defineProperty(obj, key, {
+      value: val,
+      enumerable: !!enumerable,
+      writable: true,
+      configurable: true
+    });
+  }
+  
+  // Dep
+  let uid = 0;
+  class Dep {
+    static target;
+    subs;
+    id;
+    constructor() {
+      this.id = uid++;
+      this.subs = [];
+    }
+    addSub(sub) {
+      this.subs.push(sub);
+    }
+    removeSub(sub) {
+      remove(this.subs, sub);
+    }
+    depend() {
+      if (Dep.target) {
+        Dep.target.addDep(this);
+      }
+    }
+    notify() {
+      const subs = this.subs.slice();
+      for (let i = 0, l = subs.length; i < l; i++) {
+        subs[i].update();
+      }
+    }
+  }
+  
+  const targetStack = [];
+  function pushTarget(watcher) {
+    targetStack.push(watcher);
+    Dep.target = watcher;
+  }
+  function popTarget() {
+    targetStack.pop();
+    Dep.target = targetStack[targetStack.length - 1];
+  }
+  
+  const queue = [];
+  let has = {};
+  let waiting = false;
+  function queueWatcher(watcher) {
+    const id = watcher.id;
+    if (has[id] === undefined) {
+      has[id] = true;
+      queue.push(watcher);
+      if (!waiting) {
+        waiting = true;
+        nextTick(flushSchedulerQueue);
+      }
+    }
+  }
+
+  let flushing = false; // 是否正在执行队列
+  let index = 0;
+  /**
+   * Flush both queues and run the watchers.
+   */
+  function flushSchedulerQueue() {
+    flushing = true;
+    let watcher, id;
+    for (index = 0; index < queue.length; index++) {
+      watcher = queue[index];
+      id = watcher.id;
+      has[id] = undefined;
+      watcher.run();
+    }
+
+    resetSchedulerState(); // 执行结束后进行重置
+  }
+
+  /**
+   * Reset the scheduler's state.
+   */
+  function resetSchedulerState() {
+    index = queue.length = 0;
+    has = {};
+    waiting = flushing = false;
+  }
+  
+  let watcherId = 0;
+  
+  // watcher
+  class Watcher {
+    constructor(Fn, options) {
+      this.getter = Fn;
+      this.depIds = new Set(); // 拥有 has 函数可以判断是否存在某个 id
+      this.deps = [];
+      this.newDeps = []; // 记录新一次的依赖
+      this.newDepIds = new Set();
+      this.id = ++watcherId;
+      if (options) {
+        this.sync = !!options.sync;
+      }
+      this.get();
+    }
+
+    /**
+     * Evaluate the getter, and re-collect dependencies.
+     */
+    get() {
+      pushTarget(this);
+      let value;
+      try {
+        value = this.getter.call();
+      } catch (e) {
+        throw e;
+      } finally {
+        popTarget();
+        this.cleanupDeps();
+      }
+      return value;
+    }
+
+    /**
+     * Add a dependency to this directive.
+     */
+    addDep(dep) {
+      const id = dep.id;
+      // 新的依赖已经存在的话，同样不需要继续保存
+      if (!this.newDepIds.has(id)) {
+        this.newDepIds.add(id);
+        this.newDeps.push(dep);
+        if (!this.depIds.has(id)) {
+          dep.addSub(this);
+        }
+      }
+    }
+
+    /**
+     * Clean up for dependency collection.
+     */
+    cleanupDeps() {
+      let i = this.deps.length;
+      // 比对新旧列表，找到旧列表里有，但新列表里没有，来移除相应 Watcher
+      while (i--) {
+        const dep = this.deps[i];
+        if (!this.newDepIds.has(dep.id)) {
+          dep.removeSub(this);
+        }
+      }
+
+      // 新的列表赋值给旧的，新的列表清空
+      let tmp = this.depIds;
+      this.depIds = this.newDepIds;
+      this.newDepIds = tmp;
+      this.newDepIds.clear();
+      tmp = this.deps;
+      this.deps = this.newDeps;
+      this.newDeps = tmp;
+      this.newDeps.length = 0;
+    }
+    /****************************************/
+    /**
+     * Subscriber interface.
+     * Will be called when a dependency changes.
+     */
+    update() {
+      if (this.sync) {
+        this.run();
+      } else {
+        queueWatcher(this);
+      }
+    }
+
+    /**
+     * Scheduler job interface.
+     * Will be called by the scheduler.
+     */
+    run() {
+      this.get();
+    }
+  }
+
+  function defineReactive(obj, key, val, shallow) {
+    const property = Object.getOwnPropertyDescriptor(obj, key);
+    // 读取用户可能自己定义了的 get、set
+    const getter = property && property.get;
+    const setter = property && property.set;
+    // val 没有传进来话进行手动赋值
+    if ((!getter || setter) && arguments.length === 2) {
+      val = obj[key];
+    }
+
+    const dep = new Dep();
+    let childOb = !shallow && observe(val);
+    Object.defineProperty(obj, key, {
+      enumerable: true,
+      configurable: true,
+      get: function reactiveGetter() {
+        const value = getter ? getter.call(obj) : val;
+        if (Dep.target) {
+          dep.depend();
+          if (childOb) {
+            childOb.dep.depend();
+            if (Array.isArray(value)) {
+              dependArray(value);
+            }
+          }
+        }
+        return value;
+      },
+      set: function reactiveSetter(newVal) {
+        if (setter) {
+          setter.call(obj, newVal);
+        } else {
+          val = newVal;
+        }
+        childOb = !shallow && observe(newVal);
+        dep.notify();
+      },
+    });
+  }
+  
+  // observer
+  const hasProto = "__proto__" in {};
+
+  /**
+   * Augment a target Object or Array by intercepting
+   * the prototype chain using __proto__
+   */
+  function protoAugment(target, src) {
+    target.__proto__ = src;
+  }
+
+  /**
+   * Augment a target Object or Array by defining
+   * hidden properties.
+   */
+  /* istanbul ignore next */
+  function copyAugment(target, src, keys) {
+    for (let i = 0, l = keys.length; i < l; i++) {
+      const key = keys[i];
+      def(target, key, src[key]);
+    }
+  }
+  
+  class Observer {
+    constructor(value) {
+      this.dep = new Dep();
+      def(value, '__ob__', this);
+      if (Array.isArray(value)) {
+        if (hasProto) {
+          protoAugment(value, arrayMethods);
+        } else {
+          copyAugment(value, arrayMethods, arrayKeys);
+        }
+        this.observeArray(value);
+      } else {
+        this.walk(value);
+      }
+    }
+    
+    observeArray(arr) {
+      for (let i = 0; i < arr.length; i++) {
+        observe(arr[i]);
+      }
+    }
+
+    /**
+     * 遍历对象所有的属性，调用 defineReactive
+     * 拦截对象属性的 get 和 set 方法
+     */
+    walk(obj) {
+      const keys = Object.keys(obj);
+      for (let i = 0; i < keys.length; i++) {
+        defineReactive(obj, keys[i]);
+      }
+    }
+  }
+  function observe(value) {
+    if (!isObject(value)) {
+      return;
+    }
+    let ob = new Observer(value);
+    return ob;
+  }
+
+  /**
+   * Collect dependencies on array elements when the array is touched, since
+   * we cannot intercept array element access like property getters.
+   */
+  function dependArray(value) {
+    for (let e, i = 0, l = value.length; i < l; i++) {
+      e = value[i];
+      e && e.__ob__ && e.__ob__.dep.depend();
+      if (Array.isArray(e)) {
+        dependArray(e); // 递归进行
+      }
+    }
+  }
+</script>
+<script>
+  const arrayProto = Array.prototype;
+  const arrayMethods = Object.create(arrayProto);
+  const methodsToPatch = [
+    "push",
+    "pop",
+    "shift",
+    "unshift",
+    "splice",
+    "sort",
+    "reverse",
+  ];
+  const arrayKeys = methodsToPatch;
+  /**
+   * Intercept mutating methods and emit events
+   */
+  methodsToPatch.forEach(function (method) {
+    // cache original method
+    const original = arrayProto[method];
+    def(arrayMethods, method, function mutator(...args) {
+      const result = original.apply(this, args);
+      const ob = this.__ob__;
+      /******新增 *************************/
+      let inserted; // 加添加的元素拿到
+      switch (method) {
+      case "push":
+      case "unshift":
+        inserted = args;
+        break;
+      case "splice":
+        inserted = args.slice(2);
+        break;
+      }
+      if (inserted) ob.observeArray(inserted);
+      /************************************/
+      // notify change
+      ob.dep.notify();
+      return result;
+    });
+  });
+
+  function set(target, key, val) {
+    if (Array.isArray(target)) {
+      target.length = Math.max(target.length, key);
+      target.splice(key, 1, val);
+      return val;
+    }
+
+    // targe 是对象的情况
+    // key 在 target 中已经存在
+    if (key in target && !(key in Object.prototype)) {
+      target[key] = val;
+      return val;
+    }
+
+    const ob = target.__ob__;
+    // target 不是响应式数据
+    if (!ob) {
+      target[key] = val;
+      return val;
+    }
+    // 将当前 key 变为响应式的
+    defineReactive(target, key, val);
+    ob.dep.notify();
+    return val;
+  }
+  
+  function del(target, key) {
+    if (Array.isArray(target) && isValidArrayIndex(key)) {
+      return target.splice(key, 1);
+    }
+    if (!Object.prototype.hasOwnProperty.call(target, key)) {
+      return;
+    }
+    delete target[key];
+    const ob = target.__ob__;
+    if (!ob) {
+      return;
+    }
+    ob.dep.notify();
+  }
+
+  const callbacks = [];
+  let pending = false; // 代表是否将 `callbacks` 执行加入到了微任务队列中
+
+  function flushCallbacks() {
+    pending = false;
+    const copies = callbacks.slice(0);
+    callbacks.length = 0;
+    for (let i = 0; i < copies.length; i++) {
+      copies[i]();
+    }
+  }
+  function isNative(Ctor) {
+    return typeof Ctor === "function" && /native code/.test(Ctor.toString());
+  }
+  let timerFunc;
+
+  if (typeof Promise !== "undefined" && isNative(Promise)) {
+    const p = Promise.resolve();
+    timerFunc = () => {
+      p.then(flushCallbacks);
+    };
+  } else {
+    // Fallback to setTimeout.
+    timerFunc = () => {
+      setTimeout(flushCallbacks, 0);
+    };
+  }
+  function nextTick(cb, ctx) {
+    let _resolve;
+    callbacks.push(() => {
+      if (cb) {
+        cb.call(ctx);
+      } else if (_resolve) {
+        _resolve(ctx); // 支持 Promise 风格调用，当执行到这里，就会执行用户的回调函数了
+      }
+    });
+    if (!pending) {
+      pending = true;
+      timerFunc(); // 只执行一次
+    }
+
+    if (!cb && typeof Promise !== "undefined") {
+      return new Promise((resolve) => {
+        _resolve = resolve; // 保存当前 resolve
+      });
+    }
+  }
+</script>
+<script>
+  const data = {
+    text: "hello",
+  };
+  observe(data);
+  const updateComponent = () => {
+    let i = 1000000000;
+    while (i) {
+      i--;
+    }
+    document.body.innerText = data.text;
+  };
+
+  new Watcher(updateComponent);
+
+  const updateData = () => {
+    data.text = "liang";
+    console.log(document.body.innerText);
+    const cb = () => {
+      console.log(document.body.innerText);
+    };
+    nextTick(cb);
+  };
+
+  updateData();
+
+
+  // 依赖的更新和重置
+  // 不再依赖的属性，要做更新和重置。同时要避免 watcher 重复依赖同一个属性。
+  // dep 的 subs 数组去重。思路：dep 增加 id，watcher 增加 set 记录 watcher 所依赖的 dep 的 id。
+  // dep 的 subs 数组重置。避免 watcher 不再依赖的属性让 watcher 运行。思路：watcher 除了记录 get 函数运行时所依赖的 dep 和对应 id，还要记录本次所依赖的。
+  // get 结束后将新旧对比，把自己从不再依赖的属性的 dep 的 subs 中删除。 
+  
+  // watcher 的嵌套。例如父子组件场景。
+  // 通过栈解决。思路：Dep.target 标识当前运行的 watcher，get 运行前用栈存储 Dep.target，get 方法运行结束后清理。
+  
+  // 深度响应。
+  // 思路：defineReactive 维护了 key 的 dep，现在需要维护 value 的 observer 实例，对 value 做响应式处理。同时 setter 中，新值的
+  // 情况需要更新维护的 observer 实例，做响应式处理。
+  
+  // 数组的处理
+  // 通过代理模式，代理数组的原生方法，在数组成员变更后，dep通知更新，也就是 setter 的工作。对新添加的元素调用 observe 方法去把它变成响应式。
+  // 在 Observer 中实例化一个 Dep，然后 getter 中，在获取数组类型的值时，Observer 的 Dep 也收集依赖。
+  // 将代理后的数组方法通过原型链或者直接赋值到数组上来替换原来的方法。
+  // 此外，需要将 value 对应的 observer 添加到数组对象上，方便在数组方法中拿到 observer。
+  
+  // 对数组中的成员做响应式处理即调用 observe 方法，处理成员是对象类型的情况
+  // 在 getter中如果是数组的话，我们也需要循环数组中的元素。
+  // 此外 getter 中 对象类型的值的 observer 中的 dep 收集依赖
+  
+  // set方法
+  // 数组，只需要调用一下splice方法。
+  // 对象，如果属性已经在对象中，就直接赋值
+  // 否则通过对象的 __ob__ 拿到对象的 observer 实例，如果实例不在，也是直接赋值
+  // 有实例的话，就调用 defineReactive 方法为属性添加响应式，并调用 observer.dep.notify 方法，让watcher重新运行一次，从而使新属性收集到依赖。
+  
+  // del方法
+  // 删除属性和属性对应的dep，但是 dep 在闭包里拿不到，调用属性所在对象的 dep.notify 方法即可。
+  
+  // 执行队列，减少不必要的执行，提升性能
+  // watcher 增加 sync 标识是同步执行还是排入队列。队列存放的是去重后的 watcher，所以要记录watcher是否被放入队列
+  // queueWatcher 负责判断 watcher 是否被放入，和是否调用了定时器执行队列里的watcher
+  // flushSchedulerQueue 循环队列，调用 watcher.run。
+  // resetSchedulerState 重置状态，队列，去重标识，定时器调用标识，队列执行标识。
+  
+  // next tick
+  // js引擎线程执行之后就是GUI渲染线程执行，不断重复。
+  // js引擎执行时任务队列分宏任务和微任务。宏任务生成方式：script 标签, setTimeout, setInterval 等。微任务：Promise, MutationObserver 等
+  // js引擎第一次执行时间太短，可能会直接略过渲染线程。开始第二次js引擎执行。（从结果判断的）如果让第一次执行时间加长，就符合预期。
+  // 前面用定时器会会导致没用上第一次的渲染线程，所以利用Promise.then，将 flushSchedulerQueue 从定时器改为 Promise.then，不支持Promise的再降级为定时器
+  // 具体做法：
+  // 判断是否支持Promise，定义函数 timerFunc
+  // p = Promise.resolve()
+  // timerFunc = () => {p.then(flushCallbacks)}
+  // timerFunc = () => {setTimeout(flushCallbacks, 0)}
+  // nextTick 接收 cb 和 ctx。调用后在 callbacks中添加函数，调用cb或resolve。然后调用timerFunc，执行标识置为true
+  // resolve 是在没有传入 cb 时，返回的Promise 中的resolve函数。
+  // flushCallbacks循环callbacks，将执行标识置为false
+  // 一个问题，如果在 nextTick 再改变响应式数据 data 中的值，那么是先渲染之前的值再渲染改变后的值，还是只渲染一次改变后的值，思考过后相信会对 nextTick 有更深刻的理解。
+</script>
+</body>
+</html>
