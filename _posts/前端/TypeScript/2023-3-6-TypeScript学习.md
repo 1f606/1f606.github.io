@@ -966,7 +966,7 @@ declare var variableName: number;
 ```
 
 ### .d.ts
-`.d.ts` 用于声明类型，声明后无须手动引入就能使用类型。在 `tsconfig.json` 的 `include` 数组中添加。
+`.d.ts` 专用于声明类型，声明后无须手动引入就能使用类型。在 `tsconfig.json` 的 `include` 数组中添加。
 
 .d.ts 文件中的顶级声明必须以 `declare` 或 `export` 修饰符开头，两者共用会导致其他 ts 文件使用时需要手动引入。
 其余顶级声明可以不用写 `declare`，也能在其他地方自动引入使用。
@@ -1640,6 +1640,15 @@ rule:
 
 // todo
 https://www.typescriptlang.org/docs/handbook/declaration-merging.html#merging-namespaces-with-classes-functions-and-enums
+
+## 引入 json 文件报错
+tsconfig.json 文件中要设置：
+```json
+{
+  "moduleResolution": "node",
+  "resolveJsonModule": true
+}
+```
 
 ## 资料
 https://www.typescriptlang.org
