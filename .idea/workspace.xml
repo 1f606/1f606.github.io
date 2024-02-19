@@ -6,10 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="541d2127-49de-4f5a-883f-d0e147a46c7b" name="Changes" comment="update">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/前端/JavaScript/事件/2022-12-26-事件.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/前端/JavaScript/事件/2022-12-26-事件.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/前端/TypeScript/2023-3-6-TypeScript学习.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/前端/TypeScript/2023-3-6-TypeScript学习.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/前端/react/2023-2-24-react-router-dom.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/前端/react/2023-2-24-react-router-dom.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/_posts/前端/react/2023-2-24-react.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/前端/react/2023-2-24-react.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/生活/如何做好人生规划.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/生活/如何做好人生规划.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/计算机基础/2022-12-6-计算机基础.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/计算机基础/2022-12-6-计算机基础.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -233,6 +232,9 @@
       <workItem from="1708007024682" duration="1149000" />
       <workItem from="1708064658781" duration="5762000" />
       <workItem from="1708140004376" duration="5775000" />
+      <workItem from="1708238281527" duration="3770000" />
+      <workItem from="1708264293236" duration="4655000" />
+      <workItem from="1708309912730" duration="11908000" />
     </task>
     <task id="LOCAL-00008" summary="update">
       <created>1673533685301</created>
@@ -577,7 +579,7 @@
       <option name="project" value="LOCAL" />
       <updated>1698334562422</updated>
     </task>
-    <option name="localTasksCounter" value="64" />
+    <option name="localTasksCounter" value="65" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
