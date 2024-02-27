@@ -6,8 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="541d2127-49de-4f5a-883f-d0e147a46c7b" name="Changes" comment="update">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/前端/react/2023-2-24-react-router-dom.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/前端/react/2023-2-24-react-router-dom.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/前端/react/2023-2-24-react.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/前端/react/2023-2-24-react.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/前端/react/2023-2-24-react指南.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/前端/react/2023-2-24-react指南.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/_posts/计算机基础/2022-12-6-计算机基础.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/计算机基础/2022-12-6-计算机基础.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -44,7 +43,7 @@
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/CODE/1f606.github.io/_posts/面试&quot;,
+    &quot;last_opened_file_path&quot;: &quot;E:/CODE/react-travel&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -56,18 +55,18 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="E:\CODE\1f606.github.io\_posts\面试" />
       <recent name="E:\CODE\1f606.github.io\_posts\前端\react" />
+      <recent name="E:\CODE\1f606.github.io\_posts\面试" />
       <recent name="E:\CODE\1f606.github.io\_posts\前端\JavaScript" />
       <recent name="D:\CODE\1f606.github.io\_posts\CSS" />
       <recent name="D:\CODE\1f606.github.io\_posts\JavaScript\Web Component" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\CODE\1f606.github.io\img" />
       <recent name="E:\CODE\1f606.github.io\_posts\前端\JavaScript" />
       <recent name="D:\CODE\1f606.github.io\_posts\前端" />
       <recent name="D:\CODE\1f606.github.io\_posts\前端\HTML" />
       <recent name="D:\CODE\1f606.github.io\_posts\计算机基础" />
-      <recent name="D:\CODE\1f606.github.io\_posts\工程化" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -235,6 +234,16 @@
       <workItem from="1708238281527" duration="3770000" />
       <workItem from="1708264293236" duration="4655000" />
       <workItem from="1708309912730" duration="11908000" />
+      <workItem from="1708356629321" duration="31000" />
+      <workItem from="1708433725372" duration="5925000" />
+      <workItem from="1708519624130" duration="5194000" />
+      <workItem from="1708604547996" duration="2454000" />
+      <workItem from="1708608522808" duration="754000" />
+      <workItem from="1708786240839" duration="743000" />
+      <workItem from="1708870147250" duration="1463000" />
+      <workItem from="1708957717586" duration="1013000" />
+      <workItem from="1709040729129" duration="811000" />
+      <workItem from="1709043197685" duration="853000" />
     </task>
     <task id="LOCAL-00008" summary="update">
       <created>1673533685301</created>
@@ -579,7 +588,7 @@
       <option name="project" value="LOCAL" />
       <updated>1698334562422</updated>
     </task>
-    <option name="localTasksCounter" value="65" />
+    <option name="localTasksCounter" value="67" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
