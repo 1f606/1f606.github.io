@@ -337,11 +337,33 @@ interface Point {
 
 需要注意的是：**一旦定义了索引签名`，那么确定属性和可选属性的类型都必须是它的类型的子集**：
 
+下面例子告诉 TypeScript 对象可以使用任何字符串作为键，并且它们对应的值都应该是 any 类型。
+
+`propName` 只是键的占位符，可以是任何标识符，如 key。
+
+```typescript
+interface Person {
+    name: string;
+    age?: number;
+    sex: string;
+    [propName: string]: any;
+}
+
+const trump: Person = {
+    name: 'Trump',
+    sex: '男',
+    // ok
+    address: 'Mars',
+    phoneNumber: 123456,
+}
+```
+
 例如：
 ```typescript
 interface Person {
     name: string;
     age?: number;
+    // 索引签名
     [propName: string]: string;
 }
 
@@ -543,8 +565,10 @@ enum Color {
 let r: string = Color[2]
 ```
 
-## []
-[] 传入的是类型，例如：
+## [] 方括号语法
+### 取出 type 或 interface 对应键的类型
+
+传入 key 对应的字符串来取出：
 ```typescript
 type Person = {
   age: number;
@@ -558,22 +582,28 @@ type key = 'age';
 type Age = Person[key];
 ```
 
-TODO 不理解
-第一个示例中的最终取得的类型是number，因为含有string类型的索引签名对应的属性类型就是number。
-
-第二个示例中会得到元组中所有元素的类型组成的联合类型，因为其实元组的索引都是number类型的，所以可以一次全部取到所有元素的类型。
-
-示例1：
+传入 key 对应的类型来取出：
+```typescript
 interface Test {
     [p: string]: number
 }
 // number
 type stringTypes = Test[string]
+```
 
-示例2：
+```typescript
+type ArrayType = string[];
+type ElementType = ArrayType[number]; // string
+```
+
+示例2中会得到元组中所有元素的类型组成的联合类型，因为其实元组的索引都是number类型的，所以可以一次全部取到所有元素的类型。
+
+```typescript
+// 示例2：
 type tuple = ['1', 1, true]
 // true | "1" | 1
 type allTypes = tuple[number]
+```
 
 ## typescript inference
 TS 会根据上下文环境自动地推断出变量、函数的返回值等的类型，无需我们再写明类型注解。这是 TS 的类型推断能力。
@@ -890,25 +920,6 @@ const pete: Person = {
     age: 25,
     sex: '男',
 } as Person; // ok
-```
-
-### 索引签名
-
-```typescript
-interface Person {
-    name: string;
-    age?: number;
-    sex: string;
-    [propName: string]: any;
-}
-
-const trump: Person = {
-    name: 'Trump',
-    sex: '男',
-    // ok
-    address: 'Mars',
-    phoneNumber: 123456,
-}
 ```
 
 ## 声明
