@@ -6,10 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="541d2127-49de-4f5a-883f-d0e147a46c7b" name="Changes" comment="update">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/前端/TypeScript/2023-3-6-TypeScript学习.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/前端/TypeScript/2023-3-6-TypeScript学习.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/前端/react/2023-2-24-react指南.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/前端/react/2023-2-24-react指南.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/前端/小程序/2022-7-13-小程序总结.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/前端/小程序/2022-7-13-小程序总结.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/生活/如何做好人生规划.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/生活/如何做好人生规划.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/_posts/计算机基础/2022-12-6-计算机基础.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/计算机基础/2022-12-6-计算机基础.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -254,6 +250,8 @@
       <workItem from="1709380323493" duration="5103000" />
       <workItem from="1709446937201" duration="2798000" />
       <workItem from="1709476731359" duration="305000" />
+      <workItem from="1709479784847" duration="156000" />
+      <workItem from="1709646676973" duration="1778000" />
     </task>
     <task id="LOCAL-00008" summary="update">
       <created>1673533685301</created>
@@ -598,7 +596,7 @@
       <option name="project" value="LOCAL" />
       <updated>1698334562422</updated>
     </task>
-    <option name="localTasksCounter" value="68" />
+    <option name="localTasksCounter" value="69" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

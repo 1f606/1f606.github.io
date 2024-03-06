@@ -10,8 +10,28 @@ tags:
     - React
 ---
 ## v5
+### 安装
+
+```shell
+npm i react-router-dom
+npm i --save-dev @types/react-router-dom
+```
+
+### 基础使用
+使用 `BrowserRouter` 组件，子组件用 `Route` 组件来定义路由地址。
+
+### BrowserRouter
+`BrowserRouter` 下的 `Route` 组件的 `path` 只要能被匹配，默认都会显示。
+
+解决：`Route` 的 `exact` 或 `Switch` 组件。 
+
+### Route
+`Route` 组件接收 `path` 来设置地址，`component` 接收组件，`render` 接收返回元素的渲染函数。
+
+根路径的 `path` 设置 `/`。
+
 ### Switch
-`Switch` 组件渲染子组件中的唯一一个匹配路径的 `Route` 组件。最后一个没有 `path` 的 `Route` 是备选项。
+`Switch` 组件渲染子组件中的一个匹配路径的优先级最高的 `Route` 组件。最后一个没有 `path` 的 `Route` 是备选项。
 
 ### 路由切换
 
