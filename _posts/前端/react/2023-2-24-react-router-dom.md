@@ -30,6 +30,8 @@ npm i --save-dev @types/react-router-dom
 
 根路径的 `path` 设置 `/`。
 
+`component` 属性对应的组件会接收到 `history`, `location` 和 `match` 三个 props。
+
 ### Switch
 `Switch` 组件渲染子组件中的一个匹配路径的优先级最高的 `Route` 组件。最后一个没有 `path` 的 `Route` 是备选项。
 
