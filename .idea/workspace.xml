@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="541d2127-49de-4f5a-883f-d0e147a46c7b" name="Changes" comment="update">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/计算机基础/2022-12-6-计算机基础.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/计算机基础/2022-12-6-计算机基础.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,37 +35,37 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/CODE/1f606.github.io&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "E:/CODE/1f606.github.io/img",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\CODE\1f606.github.io\img" />
       <recent name="E:\CODE\1f606.github.io\_posts\前端\react" />
       <recent name="E:\CODE\1f606.github.io\_posts\面试" />
       <recent name="E:\CODE\1f606.github.io\_posts\前端\JavaScript" />
       <recent name="D:\CODE\1f606.github.io\_posts\CSS" />
-      <recent name="D:\CODE\1f606.github.io\_posts\JavaScript\Web Component" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\CODE\1f606.github.io\img\计算机基础" />
       <recent name="E:\CODE\1f606.github.io\img" />
       <recent name="E:\CODE\1f606.github.io\_posts\前端\JavaScript" />
       <recent name="D:\CODE\1f606.github.io\_posts\前端" />
       <recent name="D:\CODE\1f606.github.io\_posts\前端\HTML" />
-      <recent name="D:\CODE\1f606.github.io\_posts\计算机基础" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -255,7 +256,7 @@
       <workItem from="1709819568525" duration="1822000" />
       <workItem from="1709822941360" duration="815000" />
       <workItem from="1709955370252" duration="4236000" />
-      <workItem from="1709975097649" duration="597000" />
+      <workItem from="1709975097649" duration="6002000" />
     </task>
     <task id="LOCAL-00008" summary="update">
       <created>1673533685301</created>
@@ -600,7 +601,7 @@
       <option name="project" value="LOCAL" />
       <updated>1698334562422</updated>
     </task>
-    <option name="localTasksCounter" value="73" />
+    <option name="localTasksCounter" value="74" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
