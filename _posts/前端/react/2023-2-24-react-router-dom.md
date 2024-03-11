@@ -28,16 +28,20 @@ npm i --save-dev @types/react-router-dom
 ### Route
 `Route` 组件接收 `path` 来设置地址，`component` 接收组件，`render` 接收返回元素的渲染函数。
 
-根路径的 `path` 设置 `/`。
+根路径的 `path` 设置 `/`。路由参数设置格式 `/detail/:id`。
 
-`component` 属性对应的组件会接收到 `history`, `location` 和 `match` 三个 props。
+#### 路由参数
+`component` 属性对应的组件的 props 会接收到 `history`, `location` 和 `match` 三个 props。可以从 `match.params` 中获取路由参数。
+
+对应的 typescript 类型声明导出名字：`RouteComponentProps`，是一个泛型，接收 props 类型。
+
+`history` 对象有路由跳转的方法。
 
 ### Switch
 `Switch` 组件渲染子组件中的一个匹配路径的优先级最高的 `Route` 组件。最后一个没有 `path` 的 `Route` 是备选项。
 
 ### 路由切换
 
-- `withRouter` 接收一个组件，渲染时用返回的组件。此时组件内部可以接收 `history`, `location` 和 `match`。
-- `useHistory`
-- `Link` 组件
-
+- `withRouter` 接收一个组件，渲染时用返回的组件。此时组件内部可以接收 `history`, `location` 和 `match`。方便跨组件传递路由参数。
+- `useHistory`，`useLocation`, `useParams` 和 `useRouteMatch` 可以在函数组件中使用拿到对应组件路由相关对象。
+- `Link` 组件，`to` 属性设置路径字符串。
