@@ -1663,4 +1663,11 @@ tsconfig.json 文件中要设置：
 
 ## 资料
 https://www.typescriptlang.org
+
 [【TypeScript】extends关键字的三种用法及类型操作实战](https://juejin.cn/post/7106038466139389959)
+
+[TypeScript：一文搞懂 infer](https://juejin.cn/post/6998347146709696519)
+
+[一道字节的 TS 体操面试真题](https://mp.weixin.qq.com/s/2eiZjKg9R1F1TuosJGzHDQ)
+
+[【译】在TypeScript中处理日期字符串](https://juejin.cn/post/7089616842221682724)
