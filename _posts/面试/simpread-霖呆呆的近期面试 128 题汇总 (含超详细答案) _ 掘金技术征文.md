@@ -730,7 +730,17 @@ websocket, 客户端与服务端双方通信
 
 ### 40. CSP 白名单知道吗？
 
-(很明显我答的不够专业，欢迎补充，感谢😊)
+CSP 告诉客户端，哪些外部资源可以加载和执行。它的实现和执行全部由浏览器完成，开发者只需提供配置。
+
+CSP 大大增强了网页的安全性。攻击者即使发现了漏洞，也没法注入脚本，除非还控制了一台列入了白名单的可信主机。
+
+两种方法可以启用 CSP。一种是通过 HTTP 头信息的Content-Security-Policy的字段。
+
+另一种是通过网页的 meta 标签。
+
+```
+<meta http-equiv="Content-Security-Policy" content="script-src 'self'; object-src 'none'; style-src cdn.example.org third-party.org; child-src https:">
+```
 
 ### 41. nginx 有配置过吗？
 
