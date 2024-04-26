@@ -865,15 +865,11 @@ JS 属于单线程，当我们在加载`script`标签内容的时候，渲染线
 
 ### 7. WebSocket 有了解过吗？它也可以跨域的
 
-这个当时答的没用过。
-
 我知道它是能使得客户端和服务器之间存在持久的连接，而且双方都可以随时开始发送数据，这种方式本质没有使用 HTTP 的响应头，因此也没有跨域的限制。
 
 (多的不会了)
 
 ### 8. 前端安全方面？XSS？CSRF？
-
-(必问...)
 
 (以下回答参考子弈小哥哥的[面试分享：两年工作经验成功面试阿里 P6 总结](https://juejin.cn/post/6844903928442667015#heading-60 "https://juejin.cn/post/6844903928442667015#heading-60")
 
@@ -950,19 +946,11 @@ CSRF 攻击 (Cross-site request forgery) 跨站请求伪造。是一种劫持受
 
 ### 10. requestAnimationFrame 有了解过吗？
 
-(啪啪啪，不长记性，其实之前面试有被问过，但是忘了再去了解了，这就吃亏了，没答上来)
-
 `requestAnimationFrame`是浏览器用于定时循环操作的一个接口，类似于`setTimeout`，主要用途是按帧对网页进行重绘。对于`JS`动画，用`requestAnimationFrame` 会比 `setInterval` 效果更好。
 
 具体可以看：[juejin.cn/post/684490…](https://juejin.cn/post/6844904083204079630 "https://juejin.cn/post/6844904083204079630")
 
-### 11. requestAnimationFrame 和 setTimeout 的区别？
-
-同上...
-
 ### 12. 平常工作中 ES6 + 主要用到了哪些？
-
-(下面看着很多，但我肯定不是全答哈，挑了几个来回答)
 
 `ES6`：
 
@@ -1023,27 +1011,13 @@ CSRF 攻击 (Cross-site request forgery) 跨站请求伪造。是一种劫持受
 8.  `Symbol.prototype.description`
 9.  `Function.toString()`调用时呈现原本源码的样子
 
-（还不了解的小伙伴可以看看浪里哥的这篇：[盘点 ES7、ES8、ES9、ES10 新特性](https://juejin.cn/post/6844904018834096142 "https://juejin.cn/post/6844904018834096142")）
-
 ### 13. 如何在前端实现一个图片压缩
 
 https://juejin.cn/post/6940430496128040967
 
-二面 (CTO)
-
-### 1. JSONP 的实现原理
-
-绝了... 又来
-
-### 2. XSS 攻击以及如何预防？
-
-绝了... 又来 X2
-
 ### 3. 不使用框架如何实现组件按需加载以及原理
 
-当时答的是是用`import`来按需引入，以及提到了`Vue.use`。
-
-但后来有去了解，`babel-plugin-import`就可以实现。
+[babel-plugin-import](https://juejin.cn/post/7051206427402043423)
 
 面试推荐好文
 ------
@@ -1056,33 +1030,6 @@ https://juejin.cn/post/6940430496128040967
 *   [面试完 50 个人后我写下这篇总结](https://juejin.cn/post/6844904019165446158 "https://juejin.cn/post/6844904019165446158")
 *   [「吐血整理」再来一打 Webpack 面试题 (持续更新)](https://juejin.cn/post/6844904094281236487 "https://juejin.cn/post/6844904094281236487")
 *   [(1.6w 字) 浏览器灵魂之问，请问你能接得住几个？](https://juejin.cn/post/6844904021308735502 "https://juejin.cn/post/6844904021308735502")
-
-(还有很多大佬的很多好文，不是呆呆不写在这里啊，是因为呆呆暂时只刷了这些，抱歉了😂)
-
-后语
---
-
-你盼世界，我盼望你无`bug`。这篇文章就介绍到了这里。
-
-有总结的不足的地方还喜欢小伙伴能在评论区留言。
-
-我是一只正在努力求生存的呆呆，也在这条路上不断的总结和成长，希望自己能够坚持✊。
-
-`"风浪没平息 我宣告奔跑的意义"`
-
-`"这不是叛逆 我只是淋了一场雨"`
-
-喜欢**霖呆呆**的小伙还希望可以关注霖呆呆的公众号 `LinDaiDai` 或者扫一扫下面的二维码👇👇👇.
-
-![](https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/5/8/171f4731e341579b~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp)
-
-我会不定时的更新一些前端方面的知识内容以及自己的原创文章🎉
-
-你的鼓励就是我持续创作的主要动力 😊.
-
-相关推荐:
-
-[《全网最详 bpmn.js 教材》](https://juejin.cn/post/6844904017567416328 "https://juejin.cn/post/6844904017567416328")
 
 [《【建议改成】读完这篇你还不懂 Babel 我给你寄口罩》](https://juejin.cn/post/6844904065223098381 "https://juejin.cn/post/6844904065223098381")
 
